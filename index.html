@@ -331,7 +331,7 @@ function showCopiedToast() {
   if (!toast) {
     toast = document.createElement('div');
     toast.id = 'copied-toast';
-    toast.className = 'fixed bottom-4 right-4 z-[60] px-4 py-2 rounded-full bg-slate-900 text-white text-sm shadow-lg opacity-0 pointer-events-none transition-opacity';
+    toast.className = 'fixed top-4 right-80 z-[60] px-4 py-2 rounded-full bg-slate-900 text-white text-sm shadow-lg opacity-0 pointer-events-none transition-opacity';
     toast.textContent = 'Copied';
     document.body.appendChild(toast);
   }
