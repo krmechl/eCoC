@@ -62,7 +62,7 @@
       <section class="bg-white rounded-xl shadow p-5 card-hover">
         <h2 class="font-semibold mb-3 flex items-center gap-2"><i class="fa-solid fa-file-contract text-blue-600"></i>Quick Start Templates</h2>
         <div class="space-y-3 text-sm">
-          <button class="template-card w-full text-left border rounded-lg p-4 hover:border-blue-500" data-template="freelance"><div class="font-medium">Freelance Agreement</div><div class="text-gray-500">Milestone-based payments</div></button>
+          <button class="template-card w-full text-left border rounded-lg p-4 hover:border-blue-500" data-template="freelance"><div class="font-medium">Analytics Agreement</div><div class="text-gray-500">Milestone-based payments</div></button>
           <button class="template-card w-full text-left border rounded-lg p-4 hover:border-blue-500" data-template="service"><div class="font-medium">Service Contract</div><div class="text-gray-500">Payment on completion</div></button>
           <button class="template-card w-full text-left border rounded-lg p-4 hover:border-blue-500" data-template="product"><div class="font-medium">Product Purchase</div><div class="text-gray-500">Escrow and inspection</div></button>
         </div>
@@ -145,7 +145,7 @@
             <label class="block text-sm font-medium mb-1">Contract Type</label>
             <select id="contract-type" class="w-full border rounded-lg px-3 py-2" required>
               <option value="">Select a contract type</option>
-              <option value="freelance">Freelance Services</option>
+              <option value="freelance">Analytics Services</option>
               <option value="service">Service Agreement</option>
               <option value="product">Product Purchase</option>
               <option value="custom">Custom Agreement</option>
@@ -472,8 +472,8 @@ function copyHash(hash) {
     function applyTemplate(template) {
       qs('contract-type').value = template;
       if (template === 'freelance') {
-        qs('contract-name').value = 'Freelance Agreement';
-        qs('contract-desc').value = 'Milestone-based agreement for freelance work.';
+        qs('contract-name').value = 'Analytics Agreement';
+        qs('contract-desc').value = 'Milestone-based agreement for lab analytical work.';
         qs('total-value').value = '5000';
         qs('currency').value = 'USDC';
         qs('release-condition').value = 'auto';
