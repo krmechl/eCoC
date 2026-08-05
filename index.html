@@ -1,16 +1,14 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 
  <!-- Favicon --> <link rel="shortcut icon" href="ai.ico"> <link rel="icon" href="ai.ico"> 
 
-
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SMB Blockchain dApp Prototype</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eCoC BlockchainAI Prototype</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     .modal { display: none; }
     .modal.open { display: flex; }
@@ -26,10 +24,14 @@
   <header class="bg-white shadow-sm sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center"><i class="fa-solid fa-cube"></i></div>
+        <div class="w-10 h-10 rounded-lg bg-white-600 text-white flex items-center justify-center">   <img src="ai.png" alt="Cube Icon" class="h-8 w-auto object-contain"></div>
         <div>
-          <div class="text-lg font-bold">eCoC</div>
-          <div class="text-xs text-gray-500">Blockchain+AI Chain of Custody</div>
+        <div class="flex items-center gap-2 text-lg font-bold">
+  <span>eCoC</span>
+  <img src="logo2.png"  alt="SocialAI" class="h-8 w-auto">
+</div>
+<div class="text-xs text-gray-500">BlockchainAI Chain of Custody</div>
+
         </div>
       </div>
       <div class="flex items-center gap-3">
@@ -45,8 +47,8 @@
         <h2 class="font-semibold mb-3 flex items-center gap-2"><i class="fa-solid fa-layer-group text-blue-600"></i>Select Module</h2>
         <div class="space-y-2">
           <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-blue-50 hover:bg-blue-100" data-module="supply-chain">eCoC Chain</button>
-          <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100" data-module="payments">Payments Chain</button>
-          <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100" data-module="loyalty">Loyalty Points  —  $ soon!</button>
+          <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100" data-module="payments">Blockchain Payments</button>
+          <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100" data-module="loyalty">Loyalty Points</button>
         </div>
       </section>
 
@@ -55,16 +57,7 @@
         <div class="grid grid-cols-1 gap-4 text-sm">
           <div><div class="text-gray-500 text-xs">Total Contracts</div><div id="total-contracts" class="text-2xl font-bold">0</div></div>
           <div><div class="text-gray-500 text-xs">Active Contracts</div><div id="active-contracts" class="text-2xl font-bold">0</div></div>
-          <div><div class="text-gray-500 text-xs">Total Value Locked</div><div id="total-value" class="text-2xl font-bold">$0.00</div></div>
-        </div>
-      </section>
-
-      <section class="bg-white rounded-xl shadow p-5 card-hover">
-        <h2 class="font-semibold mb-3 flex items-center gap-2"><i class="fa-solid fa-file-contract text-blue-600"></i>Quick Start Templates</h2>
-        <div class="space-y-3 text-sm">
-          <button class="template-card w-full text-left border rounded-lg p-4 hover:border-blue-500" data-template="freelance"><div class="font-medium">Analytics Agreement</div><div class="text-gray-500">Milestone-based payments</div></button>
-          <button class="template-card w-full text-left border rounded-lg p-4 hover:border-blue-500" data-template="service"><div class="font-medium">Service Contract</div><div class="text-gray-500">Payment on completion</div></button>
-          <button class="template-card w-full text-left border rounded-lg p-4 hover:border-blue-500" data-template="product"><div class="font-medium">Product Purchase</div><div class="text-gray-500">Escrow and inspection</div></button>
+          <div><div class="text-gray-500 text-xs">Total Value Locked</div><div id="total-value" class="text-2xl font-bold">0.00</div></div>
         </div>
       </section>
     </aside>
@@ -73,10 +66,6 @@
       <div id="welcome-screen" class="bg-white rounded-xl shadow p-8 fade-in">
         <h1 class="text-3xl font-bold mb-3">Welcome to eCoC</h1>
         <p class="text-gray-600 max-w-2xl">A Chain of Custody solution for environmental testing labs using blockchain for trust and accountability, with AI to parse and guarantee contract performance.</p>
-        <div class="mt-6 flex gap-3 flex-wrap">
-          <button class="px-5 py-3 rounded bg-blue-600 text-white hover:bg-blue-700" data-module="supply-chain">eCoC Chain</button>
-          <button class="px-5 py-3 rounded bg-green-600 text-white hover:bg-green-700" data-module="payments">Payments Chain</button>
-        </div>
       </div>
 
       <div id="supply-chain-module" class="hidden bg-white rounded-xl shadow p-6">
@@ -85,20 +74,20 @@
             <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-truck text-blue-600"></i>eCoC Chain Module</h2>
             <p class="text-gray-600 mt-1">Create and track CoC via blockchain.</p>
           </div>
-          <button id="create-contract-btn" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"><i class="fa-solid fa-circle-plus mr-2"></i>Create Smart Contract</button>
+          <button id="new-analysis-job-btn" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"><i class="fa-solid fa-folder-plus mr-2"></i>New Analysis / Job</button>
         </div>
 
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
-  <tr>
-    <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Customer</th>
-    <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
-    <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Owner</th>
-    <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Location</th>
-    <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Actions</th>
-  </tr>
-</thead>
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Customer</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Owner</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Location</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
             <tbody id="product-table-body" class="bg-white"></tbody>
           </table>
         </div>
@@ -111,23 +100,153 @@
     </section>
   </main>
 
- 
-
-<div id="history-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop">
-  <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-    <div class="p-6 border-b flex items-center justify-between gap-3">
-      <div>
-        <h3 class="text-2xl font-bold">Chain History</h3>
-        <p id="history-subtitle" class="text-gray-600 mt-1"></p>
+  <div id="analysis-job-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-2xl font-bold">New Analysis / Job</h3>
+          <p class="text-gray-600 mt-1">Select an existing customer or create a new customer profile, then provision a ledger and contract.</p>
+        </div>
+        <button type="button" id="close-analysis-job-btn" class="text-gray-500 hover:text-gray-800 text-xl">&times;</button>
       </div>
-      <button type="button" id="close-history-btn" class="text-gray-500 hover:text-gray-800 text-xl">&times;</button>
-    </div>
-    <div class="p-6">
-      <div id="history-entries" class="space-y-3"></div>
+
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button type="button" id="use-existing-customer-btn" class="border rounded-xl p-5 text-left hover:border-blue-500 bg-gray-50">
+            <div class="font-semibold text-lg mb-1">Use Existing Customer</div>
+            <div class="text-sm text-gray-600">Start a new job under an existing customer profile.</div>
+          </button>
+          <button type="button" id="create-new-customer-btn" class="border rounded-xl p-5 text-left hover:border-blue-500 bg-gray-50">
+            <div class="font-semibold text-lg mb-1">Create New Customer</div>
+            <div class="text-sm text-gray-600">Add a new customer profile, then create a new ledger and contract.</div>
+          </button>
+        </div>
+
+        <div id="customer-section" class="space-y-4 hidden">
+          <h4 class="font-semibold text-lg">Customer</h4>
+
+          <div id="existing-customer-panel" class="space-y-4 hidden">
+            <label class="block text-sm font-medium">Select Existing Customer</label>
+            <select id="existing-customer-select" class="w-full border rounded-lg px-3 py-2"></select>
+          </div>
+
+          <div id="new-customer-panel" class="space-y-4 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Customer Name</label>
+                <input id="customer-name" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="e.g., GreenGrid Environmental Engineering">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Customer ID</label>
+                <input id="customer-id" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Auto-generated if blank">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Contact Name</label>
+                <input id="customer-contact" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Primary contact">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input id="customer-email" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="name@company.com">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Notes</label>
+              <textarea id="customer-notes" class="w-full border rounded-lg px-3 py-2" rows="2" placeholder="Optional customer notes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="ledger-section" class="space-y-4 hidden">
+          <h4 class="font-semibold text-lg">Ledger / Chain</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Ledger Name</label>
+              <input id="ledger-name" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="e.g., eCoC Lab Ledger">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Environment</label>
+              <select id="ledger-env" class="w-full border rounded-lg px-3 py-2">
+                <option value="testnet">Testnet</option>
+                <option value="private">Private / Permissioned</option>
+                <option value="sandbox">Sandbox</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Chain ID</label>
+              <input id="ledger-chain-id" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Auto-generated if blank">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Ledger Status</label>
+              <input id="ledger-status" type="text" class="w-full border rounded-lg px-3 py-2" value="active" readonly>
+            </div>
+          </div>
+        </div>
+
+        <div id="contract-section" class="space-y-4 hidden">
+          <h4 class="font-semibold text-lg">Smart Contract</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Contract Name</label>
+              <input id="job-contract-name" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="e.g., CoC Workflow Agreement">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Contract Type</label>
+              <select id="job-contract-type" class="w-full border rounded-lg px-3 py-2">
+                <option value="coc">Chain of Custody</option>
+                <option value="analysis">Analysis Job</option>
+                <option value="service">Service Agreement</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Description</label>
+            <textarea id="job-contract-desc" class="w-full border rounded-lg px-3 py-2" rows="3" placeholder="Describe the job or chain-of-custody workflow"></textarea>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Contract Value</label>
+              <input id="job-contract-value" type="number" step="0.01" class="w-full border rounded-lg px-3 py-2" placeholder="0.00">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Currency</label>
+              <select id="job-contract-currency" class="w-full border rounded-lg px-3 py-2">
+                <option value="USD">USD</option>
+                <option value="USDC">USDC</option>
+                <option value="ETH">ETH</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-4 border-t">
+          <button type="button" id="cancel-analysis-job-btn" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
+          <div class="flex items-center gap-2">
+            <button type="button" id="create-ledger-btn" class="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700 hidden">Create New Ledger</button>
+            <button type="button" id="create-job-contract-btn" class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 hidden">Create Smart Contract</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
+  <div id="history-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-2xl font-bold">Chain History</h3>
+          <p id="history-subtitle" class="text-gray-600 mt-1"></p>
+        </div>
+        <button type="button" id="close-history-btn" class="text-gray-500 hover:text-gray-800 text-xl">&times;</button>
+      </div>
+      <div class="p-6">
+        <div id="history-entries" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
 
   <div id="create-contract-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop">
     <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -206,7 +325,6 @@
             <input id="end-date" type="date" class="w-full border rounded-lg px-3 py-2" required>
           </div>
         </div>
-
         <div>
           <div class="flex items-center justify-between mb-2">
             <label class="block text-sm font-medium">Payment Milestones</label>
@@ -217,12 +335,10 @@
           </div>
           <div id="milestones-container" class="space-y-3"></div>
         </div>
-
         <div>
           <label class="block text-sm font-medium mb-1">Grace Period (days)</label>
           <input id="grace-period" type="number" min="0" value="7" class="w-full border rounded-lg px-3 py-2">
         </div>
-
         <div>
           <label class="block text-sm font-medium mb-1">Quality Assurance Requirements</label>
           <textarea id="qa-requirements" class="w-full border rounded-lg px-3 py-2" rows="2"></textarea>
@@ -231,7 +347,6 @@
           <label class="block text-sm font-medium mb-1">Delivery Requirements</label>
           <textarea id="delivery-requirements" class="w-full border rounded-lg px-3 py-2" rows="2"></textarea>
         </div>
-
         <div class="flex items-center justify-between pt-4 border-t">
           <button type="button" id="cancel-contract-btn" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
           <button type="submit" class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Create Contract</button>
@@ -248,10 +363,74 @@
       selectedModule: null,
       contracts: [],
       products: [],
-      transactions: []
+      transactions: [],
+      customers: [],
+      ledgers: []
     };
 
-    const els = {};
+    function qs(id) { return document.getElementById(id); }
+    function uid(prefix) { return `${prefix}_${Math.random().toString(16).slice(2, 10)}`; }
+    function randomHex(len = 40) { const chars = '0123456789abcdef'; let out = '0x'; for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * 16)]; return out; }
+    function setDefaultDates() { const today = new Date(); qs('start-date').value = today.toISOString().slice(0, 10); const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); qs('end-date').value = end.toISOString().slice(0, 10); }
+    function openModal(id) { const modal = qs(id); modal.classList.remove('hidden'); modal.classList.add('open'); }
+    function closeModal(id) { const modal = qs(id); modal.classList.remove('open'); modal.classList.add('hidden'); }
+
+    function loadCustomerOptions() {
+      const select = qs('existing-customer-select');
+      if (!select) return;
+      select.innerHTML = state.customers.length
+        ? state.customers.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('')
+        : '<option value="">No customers available</option>';
+    }
+
+    function updateStats() {
+      qs('total-contracts').textContent = state.contracts.length;
+      qs('active-contracts').textContent = state.contracts.filter(c => c.status === 'active').length;
+      const total = state.contracts.reduce((sum, c) => sum + (Number(c.totalValue) || 0), 0);
+      qs('total-value').textContent = total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function updateWalletUI() {
+      qs('wallet-balance').textContent = state.connected ? state.balance.toFixed(2) : '0.00';
+      qs('connect-btn').textContent = state.connected ? `${state.walletAddress.slice(0, 8)}...` : 'Connect Wallet';
+    }
+
+    function renderProducts() {
+      const tbody = qs('product-table-body');
+      tbody.innerHTML = '';
+      if (!state.products.length) {
+        tbody.innerHTML = '<tr><td class="px-4 py-4 text-gray-500" colspan="5">No customers yet.</td></tr>';
+        return;
+      }
+      state.products.forEach((p, index) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-t cursor-pointer';
+        tr.innerHTML = `
+          <td class="px-4 py-3"><div class="font-medium">${p.name}</div><div class="text-xs text-gray-500">${p.id}</div></td>
+          <td class="px-4 py-3"><span class="pill bg-green-100 text-green-800">${p.status}</span></td>
+          <td class="px-4 py-3 text-sm text-gray-700">${p.currentOwner}</td>
+          <td class="px-4 py-3 text-sm text-gray-700">${p.location}</td>
+          <td class="px-4 py-3"><button type="button" class="text-blue-600 hover:underline text-sm" onclick="showProductHistory(${index})">View History</button></td>
+        `;
+        tr.addEventListener('click', e => { if (!e.target.closest('button')) showProductHistory(index); });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderTransactions() {
+      const list = qs('tx-list');
+      list.innerHTML = '';
+      if (!state.transactions.length) {
+        list.innerHTML = '<div class="text-gray-500">No activity yet.</div>';
+        return;
+      }
+      state.transactions.slice(0, 5).forEach(tx => {
+        const div = document.createElement('div');
+        div.className = 'border rounded-lg p-4 bg-gray-50';
+        div.innerHTML = `<div class="flex justify-between items-center mb-1"><div class="text-sm font-semibold uppercase">${tx.type}</div><div class="text-xs text-gray-500">${new Date(tx.time).toLocaleTimeString()}</div></div><div class="text-sm font-mono truncate">${tx.hash}</div><div class="text-xs text-gray-600 mt-1">Status: ${tx.status} ${tx.amount ? `| Amount: ${tx.amount}` : ''}</div>`;
+        list.appendChild(div);
+      });
+    }
 
 function showProductHistory(index) {
   const p = state.products[index];
@@ -268,11 +447,12 @@ function showProductHistory(index) {
     const timestamp = e.timestamp || new Date(Date.now() - i * 3600000).toLocaleString();
     const status = e.status || 'confirmed';
     const blockNo = e.blockNo || (10400000 + index * 10 + i + 1);
-    const statusClass = status === 'confirmed'
-      ? 'bg-emerald-100 text-emerald-800'
-      : status === 'pending'
-      ? 'bg-amber-100 text-amber-800'
-      : 'bg-slate-100 text-slate-800';
+    const statusClass =
+      status === 'confirmed'
+        ? 'bg-emerald-100 text-emerald-800'
+        : status === 'pending'
+        ? 'bg-amber-100 text-amber-800'
+        : 'bg-slate-100 text-slate-800';
 
     d.innerHTML = `
       <div class="flex items-start justify-between gap-3 flex-wrap mb-3">
@@ -298,10 +478,31 @@ function showProductHistory(index) {
       <div class="mt-3 text-sm text-slate-700 leading-6">${e.text}</div>
     `;
 
-    d.querySelector('button[data-hash]')?.addEventListener('click', (ev) => {
+    d.addEventListener('click', ev => {
       ev.stopPropagation();
+    });
+
+    const copyBtn = d.querySelector('button[data-hash]');
+    copyBtn?.addEventListener('click', async ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+
       const hash = ev.currentTarget.getAttribute('data-hash') || '';
-      if (hash) copyHash(hash);
+      if (!hash) return;
+
+      const btn = ev.currentTarget;
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.disabled = true;
+
+      try {
+        await navigator.clipboard.writeText(hash);
+      } catch (_) {}
+
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.disabled = false;
+      }, 1200);
     });
 
     container.appendChild(d);
@@ -309,128 +510,83 @@ function showProductHistory(index) {
 
   openModal('history-modal');
 }
-    function qs(id) { return document.getElementById(id); }
-
-    function randomHex(len = 40) {
-      const chars = '0123456789abcdef';
-      let out = '0x';
-      for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * 16)];
-      return out;
-    }
-
-    function setDefaultDates() {
-      const today = new Date();
-      qs('start-date').value = today.toISOString().slice(0, 10);
-      const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-      qs('end-date').value = end.toISOString().slice(0, 10);
-    }
-
-function copyHash(hash) {
-  navigator.clipboard.writeText(hash).catch(() => {});
-}
-
-
-let copiedToastTimer = null;
-
-function showCopiedToast() {
-  let toast = document.getElementById('copied-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'copied-toast';
-    toast.className = 'fixed top-4 right-80 z-[60] px-4 py-2 rounded-full bg-slate-900 text-white text-sm shadow-lg opacity-0 pointer-events-none transition-opacity';
-    toast.textContent = 'Copied';
-    document.body.appendChild(toast);
-  }
-  toast.classList.remove('opacity-0');
-  toast.classList.add('opacity-100');
-  clearTimeout(copiedToastTimer);
-  copiedToastTimer = setTimeout(() => {
-    toast.classList.add('opacity-0');
-    toast.classList.remove('opacity-100');
-  }, 1200);
-}
-
-function copyHash(hash) {
-  navigator.clipboard.writeText(hash).then(showCopiedToast).catch(() => {});
-}
-
-
-    function openModal(id) {
-      const modal = qs(id);
-      modal.classList.remove('hidden');
-      modal.classList.add('open');
-    }
-
-    function closeModal(id) {
-      const modal = qs(id);
-      modal.classList.remove('open');
-      modal.classList.add('hidden');
-    }
-
-    function updateStats() {
-      qs('total-contracts').textContent = state.contracts.length;
-      qs('active-contracts').textContent = state.contracts.filter(c => c.status === 'active').length;
-      const total = state.contracts.reduce((sum, c) => sum + (Number(c.totalValue) || 0), 0);
-      qs('total-value').textContent = `$${total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-    }
-
-    function updateWalletUI() {
-      qs('wallet-balance').textContent = state.connected ? state.balance.toFixed(2) : '0.00';
-      qs('connect-btn').textContent = state.connected ? `${state.walletAddress.slice(0, 8)}...` : 'Connect Wallet';
-    }
-
-  function renderProducts() {
-  const tbody = qs('product-table-body');
-  tbody.innerHTML = '';
-
-  if (!state.products.length) {
-    tbody.innerHTML = '<tr><td class="px-4 py-4 text-gray-500" colspan="5">No products yet.</td></tr>';
-    return;
-  }
-
-  state.products.forEach((p, index) => {
-    const tr = document.createElement('tr');
-    tr.className = 'border-t cursor-pointer';
-    tr.innerHTML = `
-      <td class="px-4 py-3">
-        <div class="font-medium">${p.name}</div>
-        <div class="text-xs text-gray-500">${p.id}</div>
-      </td>
-      <td class="px-4 py-3"><span class="pill bg-green-100 text-green-800">${p.status}</span></td>
-      <td class="px-4 py-3 text-sm text-gray-700">${p.currentOwner}</td>
-      <td class="px-4 py-3 text-sm text-gray-700">${p.location}</td>
-      <td class="px-4 py-3">
-        <button type="button" class="text-blue-600 hover:underline text-sm" onclick="showProductHistory(${index})">
-          View History
-        </button>
-      </td>
-    `;
-    tr.addEventListener('click', (e) => {
-      if (!e.target.closest('button')) showProductHistory(index);
-    });
-    tbody.appendChild(tr);
-  });
-}
-    function renderTransactions() {
-      const list = qs('tx-list');
-      list.innerHTML = '';
-      if (!state.transactions.length) {
-        list.innerHTML = '<div class="text-gray-500">No activity yet.</div>';
-        return;
+    let copiedToastTimer = null;
+    function showCopiedToast() {
+      let toast = qs('copied-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'copied-toast';
+        toast.className = 'absolute top-4 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-full bg-slate-900 text-white text-sm shadow-lg opacity-0 pointer-events-none transition-opacity';
+        toast.textContent = 'Copied';
+        const modal = qs('history-modal');
+        modal.style.position = 'relative';
+        modal.appendChild(toast);
       }
-      state.transactions.slice(0, 5).forEach(tx => {
-        const div = document.createElement('div');
-        div.className = 'border rounded-lg p-4 bg-gray-50';
-        div.innerHTML = `
-          <div class="flex justify-between items-center mb-1">
-            <div class="text-sm font-semibold uppercase">${tx.type}</div>
-            <div class="text-xs text-gray-500">${new Date(tx.time).toLocaleTimeString()}</div>
-          </div>
-          <div class="text-sm font-mono truncate">${tx.hash}</div>
-          <div class="text-xs text-gray-600 mt-1">Status: ${tx.status} ${tx.amount ? `| Amount: ${tx.amount}` : ''}</div>
-        `;
-        list.appendChild(div);
-      });
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      clearTimeout(copiedToastTimer);
+      copiedToastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0');
+        toast.classList.remove('opacity-100');
+      }, 1200);
+    }
+
+    function createExistingOrNewCustomer() {
+      return document.getElementById('existing-customer-panel').classList.contains('hidden') ? 'new' : 'existing';
+    }
+
+    function showExistingCustomerFlow() {
+      qs('customer-section').classList.remove('hidden');
+      qs('existing-customer-panel').classList.remove('hidden');
+      qs('new-customer-panel').classList.add('hidden');
+      qs('ledger-section').classList.remove('hidden');
+      qs('contract-section').classList.remove('hidden');
+      qs('create-ledger-btn').classList.remove('hidden');
+      qs('create-job-contract-btn').classList.remove('hidden');
+      loadCustomerOptions();
+    }
+
+    function showNewCustomerFlow() {
+      qs('customer-section').classList.remove('hidden');
+      qs('existing-customer-panel').classList.add('hidden');
+      qs('new-customer-panel').classList.remove('hidden');
+      qs('ledger-section').classList.remove('hidden');
+      qs('contract-section').classList.remove('hidden');
+      qs('create-ledger-btn').classList.remove('hidden');
+      qs('create-job-contract-btn').classList.remove('hidden');
+    }
+
+    function createNewLedger() {
+      const mode = createExistingOrNewCustomer();
+      let customer = null;
+      if (mode === 'existing') {
+        customer = state.customers.find(c => c.id === qs('existing-customer-select').value);
+        if (!customer) return alert('Select an existing customer first.');
+      } else {
+        const name = qs('customer-name').value.trim();
+        if (!name) return alert('Enter a customer name.');
+        customer = { id: qs('customer-id').value.trim() || uid('cust'), name, contact: qs('customer-contact').value.trim(), email: qs('customer-email').value.trim(), notes: qs('customer-notes').value.trim() };
+        state.customers.push(customer);
+        loadCustomerOptions();
+      }
+      const ledger = { id: uid('ledger'), customerId: customer.id, name: qs('ledger-name').value.trim() || `${customer.name} Ledger`, env: qs('ledger-env').value, chainId: qs('ledger-chain-id').value.trim() || uid('chain'), status: 'active', createdAt: new Date().toISOString() };
+      state.ledgers.push(ledger);
+      alert(`Ledger created for ${customer.name}: ${ledger.name}`);
+      return ledger;
+    }
+
+    function createJobContract() {
+      const mode = createExistingOrNewCustomer();
+      const customerId = mode === 'existing' ? qs('existing-customer-select').value : (qs('customer-id').value.trim() || state.customers.at(-1)?.id);
+      const customer = state.customers.find(c => c.id === customerId);
+      if (!customer) return alert('Create or select a customer first.');
+      const ledger = [...state.ledgers].reverse().find(l => l.customerId === customer.id);
+      if (!ledger) return alert('Create a ledger first.');
+      const contract = { id: uid('contract'), customerId: customer.id, ledgerId: ledger.id, name: qs('job-contract-name').value.trim() || 'New Analysis Job', type: qs('job-contract-type').value, description: qs('job-contract-desc').value.trim(), value: parseFloat(qs('job-contract-value').value || '0'), currency: qs('job-contract-currency').value, createdAt: new Date().toISOString(), status: 'active' };
+      state.contracts.push(contract);
+      closeModal('analysis-job-modal');
+      updateStats();
+      alert(`Smart contract created for ${customer.name} on ${ledger.name}`);
     }
 
     function addMilestoneRow(values = {}) {
@@ -457,8 +613,7 @@ function copyHash(hash) {
     function removeMilestone(index) {
       const container = qs('milestones-container');
       if (container.children.length <= 1) return alert('At least one milestone is required.');
-      const row = qs(`milestone-${index}`);
-      if (row) row.remove();
+      qs(`milestone-${index}`)?.remove();
     }
 
     function createContract() {
@@ -511,31 +666,12 @@ function copyHash(hash) {
     }
 
     function confirmCreateContract() {
-      const total = [...qs('milestones-container').querySelectorAll('input[id^="milestone-amount-"]')]
-        .reduce((sum, el) => sum + (parseFloat(el.value) || 0), 0);
+      const total = [...qs('milestones-container').querySelectorAll('input[id^="milestone-amount-"]')].reduce((sum, el) => sum + (parseFloat(el.value) || 0), 0);
       if (Math.round(total) !== 100) return alert(`Milestone percentages must total 100. Current total: ${total}`);
-      const contract = {
-        id: randomHex(40),
-        name: qs('contract-name').value.trim(),
-        description: qs('contract-desc').value.trim(),
-        type: qs('contract-type').value,
-        totalValue: parseFloat(qs('total-value').value),
-        currency: qs('currency').value,
-        status: 'active',
-        createdAt: new Date().toISOString(),
-        milestones: []
-      };
-      const rows = [...qs('milestones-container').children];
-      rows.forEach((row, i) => {
+      const contract = { id: randomHex(40), name: qs('contract-name').value.trim(), description: qs('contract-desc').value.trim(), type: qs('contract-type').value, totalValue: parseFloat(qs('total-value').value), currency: qs('currency').value, releaseCondition: qs('release-condition').value, remittanceAddress: qs('remittance-address').value.trim(), escrowAddress: qs('escrow-address').value.trim(), refundPolicy: qs('refund-policy').value, startDate: qs('start-date').value, endDate: qs('end-date').value, gracePeriod: parseInt(qs('grace-period').value || '7', 10), qaRequirements: qs('qa-requirements').value.trim(), deliveryRequirements: qs('delivery-requirements').value.trim(), milestones: [], status: 'active', createdAt: new Date().toISOString() };
+      [...qs('milestones-container').children].forEach((row, i) => {
         const idx = i + 1;
-        contract.milestones.push({
-          id: idx,
-          name: qs(`milestone-name-${idx}`).value.trim(),
-          amount: parseFloat(qs(`milestone-amount-${idx}`).value),
-          description: qs(`milestone-desc-${idx}`).value.trim(),
-          deadline: qs(`milestone-deadline-${idx}`).value,
-          completed: false
-        });
+        contract.milestones.push({ id: idx, name: qs(`milestone-name-${idx}`).value.trim(), amount: parseFloat(qs(`milestone-amount-${idx}`).value), description: qs(`milestone-desc-${idx}`).value.trim(), deadline: qs(`milestone-deadline-${idx}`).value, completed: false });
       });
       state.contracts.push(contract);
       state.transactions.unshift({ hash: randomHex(64), type: 'contractdeploy', amount: contract.totalValue, status: 'confirmed', time: new Date().toISOString() });
@@ -554,13 +690,6 @@ function copyHash(hash) {
 
     function selectModule(module) {
       state.selectedModule = module;
-      document.querySelectorAll('.module-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-50');
-        btn.classList.add('bg-gray-50');
-      });
-      document.querySelectorAll('[data-module]').forEach(el => {
-        if (el.dataset.module === module) el.classList.remove('bg-gray-50');
-      });
       qs('welcome-screen').classList.add('hidden');
       qs('supply-chain-module').classList.add('hidden');
       qs('payments-module').classList.add('hidden');
@@ -568,18 +697,34 @@ function copyHash(hash) {
       if (module === 'payments') qs('payments-module').classList.remove('hidden');
     }
 
+    function seedData() {
+      state.customers = [
+        { id: 'cust_001', name: 'GreenGrid Environmental Engineering' },
+        { id: 'cust_002', name: 'AquaTerra Environmental Consulting' },
+        { id: 'cust_003', name: 'Apex Watershed Solutions' }
+      ];
+      state.products = [
+        { id: 'prod-001', name: 'GreenGrid Environmental Engineering', status: 'registered', currentOwner: 'Block 10428392', location: '19103', txs: [ { hash: '0x8f2a1c4d9e7b3f6a2c5d8e1f0a7b6c3d4e5f60123456789abcd1234567890ef1', title: 'Task Accomplished', text: 'Pickup completed from client site and chain-of-custody logged.', status: 'confirmed', timestamp: '2026-08-05 08:15 AM' }, { hash: '0x19b7f3c2a1d8e4f6b3c5a7e9d2f0a1b3c4d5e6f7890abc1234567890abcdef12', title: 'Internal Transfer', text: 'Transferred to logistics coordinator for routing and inspection prep.', status: 'confirmed', timestamp: '2026-08-05 09:10 AM' }, { hash: '0xa4d9f1c2b3e5a7d8c1f0b2e4d6a8c9f1e3b5d7a90123456789abcdef01234567', title: 'Service Center Delivery', text: 'Delivered to service center for intake review and staging.', status: 'confirmed', timestamp: '2026-08-05 10:05 AM' }, { hash: '0xf1c2e3d4a5b6c7d8e9f00112233445566778899aabbccddeeff0011223344556', title: 'Lab Delivery', text: 'Samples delivered to lab for analysis and verification.', status: 'pending', timestamp: '2026-08-05 11:45 AM' } ] },
+        { id: 'prod-002', name: 'AquaTerra Environmental Consulting', status: 'inspected', currentOwner: 'Block 10428407', location: '15213', txs: [ { hash: '0x9c1a2b3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcd01', title: 'Task Accomplished', text: 'Pickup completed from field office and preliminary record created.', status: 'confirmed', timestamp: '2026-08-05 08:20 AM' }, { hash: '0x7a6b5c4d3e2f1a0987654321fedcba9876543210abcdef1234567890abcdef12', title: 'Internal Transfer', text: 'Transferred internally for documentation and compliance review.', status: 'confirmed', timestamp: '2026-08-05 09:35 AM' }, { hash: '0x3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a', title: 'Service Center Delivery', text: 'Delivered to service center for equipment intake and validation.', status: 'confirmed', timestamp: '2026-08-05 10:45 AM' }, { hash: '0xd2c3b4a5968776655443322110ffeeddccbbaa99887766554433221100ffeecc', title: 'Lab Delivery', text: 'Material delivered to lab for testing and certification.', status: 'pending', timestamp: '2026-08-05 12:00 PM' } ] },
+        { id: 'prod-003', name: 'Apex Watershed Solutions', status: 'shipped', currentOwner: 'Block 10428419', location: '17101', txs: [ { hash: '0x44aabbccddeeff00112233445566778899aabbccddeeff001122334455667788', title: 'Task Accomplished', text: 'Pickup completed at project site and shipment manifest generated.', status: 'confirmed', timestamp: '2026-08-05 07:55 AM' }, { hash: '0x55bbccddeeff00112233445566778899aabbccddeeff00112233445566778899', title: 'Internal Transfer', text: 'Transferred between field teams for routing and QA review.', status: 'confirmed', timestamp: '2026-08-05 09:00 AM' }, { hash: '0x66ccddee00112233445566778899aabbccddeeff00112233445566778899aabb', title: 'Service Center Delivery', text: 'Delivered to service center for processing and dispatch.', status: 'confirmed', timestamp: '2026-08-05 10:20 AM' }, { hash: '0x77ddeeff00112233445566778899aabbccddeeff00112233445566778899aabb', title: 'Lab Delivery', text: 'Lab delivery confirmed for final environmental analysis.', status: 'confirmed', timestamp: '2026-08-05 11:30 AM' } ] }
+      ];
+      renderProducts();
+      loadCustomerOptions();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       qs('connect-btn').addEventListener('click', connectWallet);
-      qs('create-contract-btn').addEventListener('click', createContract);
+      qs('new-analysis-job-btn').addEventListener('click', () => openModal('analysis-job-modal'));
+      qs('close-analysis-job-btn').addEventListener('click', () => closeModal('analysis-job-modal'));
+      qs('cancel-analysis-job-btn').addEventListener('click', () => closeModal('analysis-job-modal'));
+      qs('use-existing-customer-btn').addEventListener('click', showExistingCustomerFlow);
+      qs('create-new-customer-btn').addEventListener('click', showNewCustomerFlow);
+      qs('create-ledger-btn').addEventListener('click', createNewLedger);
+      qs('create-job-contract-btn').addEventListener('click', createJobContract);
+      qs('analysis-job-modal').addEventListener('click', e => { if (e.target.id === 'analysis-job-modal') closeModal('analysis-job-modal'); });
+      qs('close-history-btn').addEventListener('click', () => closeModal('history-modal'));
+      qs('history-modal').addEventListener('click', e => { if (e.target.id === 'history-modal') closeModal('history-modal'); });
       qs('cancel-contract-btn').addEventListener('click', () => closeModal('create-contract-modal'));
-
-qs('close-history-btn').addEventListener('click', () => closeModal('history-modal'));
-
-qs('history-modal').addEventListener('click', e => {
-  if (e.target.id === 'history-modal') closeModal('history-modal');
-});
-
-
       qs('contract-form').addEventListener('submit', e => { e.preventDefault(); confirmCreateContract(); });
       qs('add-milestone-btn').addEventListener('click', () => addMilestoneRow());
       qs('remove-milestone-btn').addEventListener('click', () => {
@@ -587,141 +732,26 @@ qs('history-modal').addEventListener('click', e => {
         if (count > 1) qs(`milestone-${count}`)?.remove();
         else alert('At least one milestone is required.');
       });
-      document.querySelectorAll('.module-btn,[data-module]').forEach(btn => {
-        btn.addEventListener('click', () => selectModule(btn.dataset.module));
-      });
-      document.querySelectorAll('.template-card').forEach(btn => {
-        btn.addEventListener('click', () => applyTemplate(btn.dataset.template));
-      });
-      qs('create-contract-modal').addEventListener('click', e => {
-        if (e.target.id === 'create-contract-modal') closeModal('create-contract-modal');
-      });
-      window.addMilestone = addMilestoneRow;
-      window.removeMilestone = removeMilestone;
-      window.confirmCreateContract = confirmCreateContract;
-      window.createContract = createContract;
+      document.querySelectorAll('.module-btn,[data-module]').forEach(btn => btn.addEventListener('click', () => selectModule(btn.dataset.module)));
+      document.querySelectorAll('.template-card').forEach(btn => btn.addEventListener('click', () => applyTemplate(btn.dataset.template)));
+      qs('create-contract-modal').addEventListener('click', e => { if (e.target.id === 'create-contract-modal') closeModal('create-contract-modal'); });
       window.openModal = openModal;
       window.closeModal = closeModal;
-
+      window.showProductHistory = showProductHistory;
+      window.removeMilestone = removeMilestone;
+      window.createContract = createContract;
+      window.confirmCreateContract = confirmCreateContract;
+      window.showExistingCustomerFlow = showExistingCustomerFlow;
+      window.showNewCustomerFlow = showNewCustomerFlow;
+      window.createNewLedger = createNewLedger;
+      window.createJobContract = createJobContract;
       setDefaultDates();
       addMilestoneRow({ amount: 100 });
-
-
-
- state.products = [
-  {
-    id: 'prod-001',
-    name: 'GreenGrid Environmental Engineering',
-    status: 'registered',
-    currentOwner: 'Block 10428392',
-    location: '19103',
-    txs: [
-      { hash: '0x8f2a1c4d9e7b3f6a2c5d8e1f0a7b6c3d4e5f60123456789abcd1234567890ef1', title: 'Task Accomplished', text: 'Pickup completed from client site and chain-of-custody logged.' },
-      { hash: '0x19b7f3c2a1d8e4f6b3c5a7e9d2f0a1b3c4d5e6f7890abc1234567890abcdef12', title: 'Internal Transfer', text: 'Transferred to logistics coordinator for routing and inspection prep.' },
-      { hash: '0xa4d9f1c2b3e5a7d8c1f0b2e4d6a8c9f1e3b5d7a90123456789abcdef01234567', title: 'Service Center Delivery', text: 'Delivered to service center for intake review and staging.' },
-      { hash: '0xf1c2e3d4a5b6c7d8e9f00112233445566778899aabbccddeeff0011223344556', title: 'Lab Delivery', text: 'Samples delivered to lab for analysis and verification.' }
-    ]
-  },
-  {
-    id: 'prod-002',
-    name: 'AquaTerra Environmental Consulting',
-    status: 'inspected',
-    currentOwner: 'Block 10428407',
-    location: '15213',
-    txs: [
-      { hash: '0x9c1a2b3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcd01', title: 'Task Accomplished', text: 'Pickup completed from field office and preliminary record created.' },
-      { hash: '0x7a6b5c4d3e2f1a0987654321fedcba9876543210abcdef1234567890abcdef12', title: 'Internal Transfer', text: 'Transferred internally for documentation and compliance review.' },
-      { hash: '0x3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a', title: 'Service Center Delivery', text: 'Delivered to service center for equipment intake and validation.' },
-      { hash: '0xd2c3b4a5968776655443322110ffeeddccbbaa99887766554433221100ffeecc', title: 'Lab Delivery', text: 'Material delivered to lab for testing and certification.' }
-    ]
-  },
-  {
-    id: 'prod-003',
-    name: 'Apex Watershed Solutions',
-    status: 'shipped',
-    currentOwner: 'Block 10428419',
-    location: '17101',
-    txs: [
-      { hash: '0x44aabbccddeeff00112233445566778899aabbccddeeff001122334455667788', title: 'Task Accomplished', text: 'Pickup completed at project site and shipment manifest generated.' },
-      { hash: '0x55bbccddeeff00112233445566778899aabbccddeeff00112233445566778899', title: 'Internal Transfer', text: 'Transferred between field teams for routing and QA review.' },
-      { hash: '0x66ccddee00112233445566778899aabbccddeeff00112233445566778899aabb', title: 'Service Center Delivery', text: 'Delivered to service center for processing and dispatch.' },
-      { hash: '0x77ddeeff00112233445566778899aabbccddeeff00112233445566778899aabb', title: 'Lab Delivery', text: 'Lab delivery confirmed for final environmental analysis.' }
-    ]
-  },
-  {
-    id: 'prod-004',
-    name: 'TerraLogic Engineering Group',
-    status: 'received',
-    currentOwner: 'Block 10428501',
-    location: '19107',
-    txs: [
-      { hash: '0x18a9b8c7d6e5f40312233445566778899aabbccddeeff001122334455667700', title: 'Task Accomplished', text: 'Pickup completed from regional office and manifest approved.' },
-      { hash: '0x29b8c7d6e5f40312233445566778899aabbccddeeff00112233445566770011', title: 'Internal Transfer', text: 'Transferred to compliance desk for review and documentation.' },
-      { hash: '0x3ac7d6e5f40312233445566778899aabbccddeeff0011223344556677001122', title: 'Service Center Delivery', text: 'Delivered to service center for intake and system logging.' },
-      { hash: '0x4bd6e5f40312233445566778899aabbccddeeff001122334455667700112233', title: 'Lab Delivery', text: 'Lab received samples for formal environmental verification.' }
-    ]
-  },
-  {
-    id: 'prod-005',
-    name: 'BlueRidge Environmental Partners',
-    status: 'registered',
-    currentOwner: 'Block 10428544',
-    location: '15222',
-    txs: [
-      { hash: '0x51c4d3e2f10928374655aabbccddeeff00112233445566778899aabbccdd1100', title: 'Task Accomplished', text: 'Pickup completed from client facility and chain-of-custody recorded.' },
-      { hash: '0x62d3e2f10928374655aabbccddeeff00112233445566778899aabbccdd110022', title: 'Internal Transfer', text: 'Transferred to internal QA team for routing approval.' },
-      { hash: '0x73e2f10928374655aabbccddeeff00112233445566778899aabbccdd11002233', title: 'Service Center Delivery', text: 'Delivered to service center for staging and verification.' },
-      { hash: '0x84f10928374655aabbccddeeff00112233445566778899aabbccdd1100223344', title: 'Lab Delivery', text: 'Samples delivered to lab for results processing.' }
-    ]
-  },
-  {
-    id: 'prod-006',
-    name: 'Commonwealth Hydro Solutions',
-    status: 'inspected',
-    currentOwner: 'Block 10428588',
-    location: '17011',
-    txs: [
-      { hash: '0x90a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abca1', title: 'Task Accomplished', text: 'Pickup completed from inspection site and records finalized.' },
-      { hash: '0x81b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcab22', title: 'Internal Transfer', text: 'Transferred for internal review and compliance confirmation.' },
-      { hash: '0x72c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcab2333', title: 'Service Center Delivery', text: 'Delivered to service center for intake and asset tagging.' },
-      { hash: '0x63d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcab24444', title: 'Lab Delivery', text: 'Lab delivery confirmed for water-quality analysis.' }
-    ]
-  },
-  {
-    id: 'prod-007',
-    name: 'EnviroCore Infrastructure',
-    status: 'shipped',
-    currentOwner: 'Block 10428622',
-    location: '18015',
-    txs: [
-      { hash: '0x7f6e5d4c3b2a1908172635445566778899aabbccddeeff001122334455667701', title: 'Task Accomplished', text: 'Pickup completed from warehouse and shipment prepared.' },
-      { hash: '0x6e5d4c3b2a1908172635445566778899aabbccddeeff00112233445566770112', title: 'Internal Transfer', text: 'Transferred between operations teams for routing control.' },
-      { hash: '0x5d4c3b2a1908172635445566778899aabbccddeeff0011223344556677011223', title: 'Service Center Delivery', text: 'Delivered to service center for pre-deployment staging.' },
-      { hash: '0x4c3b2a1908172635445566778899aabbccddeeff001122334455667701122334', title: 'Lab Delivery', text: 'Samples delivered to lab for testing and certification.' }
-    ]
-  },
-  {
-    id: 'prod-008',
-    name: 'NorthStar Environmental Systems',
-    status: 'sold',
-    currentOwner: 'Block 10428665',
-    location: '16001',
-    txs: [
-      { hash: '0x1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f80', title: 'Task Accomplished', text: 'Pickup completed from final client and release initiated.' },
-      { hash: '0x2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091', title: 'Internal Transfer', text: 'Transferred to closing operations for final handoff processing.' },
-      { hash: '0x3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2', title: 'Service Center Delivery', text: 'Delivered to service center for archive and final reconciliation.' },
-      { hash: '0x4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3', title: 'Lab Delivery', text: 'Lab delivery closed out with final results logged.' }
-    ]
-  }
-];
-      state.transactions = [
-        { hash: randomHex(64), type: 'contractdeploy', amount: 0.0012, status: 'confirmed', time: new Date().toISOString() },
-        { hash: randomHex(64), type: 'productregister', amount: 0.0008, status: 'confirmed', time: new Date().toISOString() }
-      ];
+      seedData();
       updateWalletUI();
       updateStats();
-      renderProducts();
       renderTransactions();
+      selectModule('supply-chain');
     });
   </script>
 </body>
