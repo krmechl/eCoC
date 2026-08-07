@@ -108,57 +108,6 @@
       }
     }
     
-    .blockchain-hash {
-      font-family: 'Courier New', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.5px;
-      word-break: break-all;
-    }
-    
-    .timeline-item {
-      position: relative;
-      padding-left: 2rem;
-    }
-    
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 1px;
-      height: 100%;
-      background: #e5e7eb;
-    }
-    
-    .timeline-item::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #667eea;
-      transform: translateX(-4px);
-    }
-    
-    .timeline-item.completed::after {
-      background: var(--success-green);
-    }
-    
-    .mobile-nav {
-      display: none;
-    }
-    
-    @media (max-width: 768px) {
-      .desktop-nav {
-        display: none;
-      }
-      .mobile-nav {
-        display: flex;
-      }
-    }
-    
     .fade-in {
       animation: fadeIn 0.3s ease-in;
     }
@@ -924,7 +873,7 @@
           </div>
         </div>
         <div>
-          <label class="block text-sm font-medium mb-2">Payment Milestones</label>
+          <label class="block text-sm font-medium mb-1">Payment Milestones</label>
           <div id="milestones-container" class="space-y-3">
             <!-- Milestones will be added dynamically -->
           </div>
@@ -1570,7 +1519,7 @@
           <h4 class="font-semibold text-lg mb-3">Select Job (All Customers)</h4>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="job-cards-container">
             ${state.jobs.map(job => `
-              <div class="glass-card rounded-xl p-5 ledger-card cursor-pointer hover:bg-blue-50 transition" onclick="viewJobBlocks('${job.id}')">
+              <div class="glass-card rounded-xl p-5 ledger-card cursor-pointer hover:bg-blue-50 transition" onclick="viewJobHistory('${job.id}')">
                 <div class="flex justify-between items-start mb-3">
                   <div>
                     <h3 class="font-semibold text-lg text-gray-900">${job.id}</h3>
@@ -1628,7 +1577,7 @@
           job.status === 'completed' ? 'Completed' : 'Error';
         
         return `
-          <div class="glass-card rounded-xl p-5 ledger-card cursor-pointer hover:bg-blue-50 transition" onclick="viewJobBlocks('${job.id}')">
+          <div class="glass-card rounded-xl p-5 ledger-card cursor-pointer hover:bg-blue-50 transition" onclick="viewJobHistory('${job.id}')">
             <div class="flex justify-between items-start mb-3">
               <div>
                 <h3 class="font-semibold text-lg text-gray-900">${job.id}</h3>
@@ -1652,19 +1601,19 @@
       }).join('');
     }
 
-    function viewJobBlocks(jobId) {
-      const blockchainEntriesSection = document.getElementById('blockchain-entries-section');
-      const contractViewSection = document.getElementById('contract-view-section');
-      blockchainEntriesSection.classList.remove('hidden');
-      contractViewSection.classList.add('hidden');
-      renderBlockchainEntries(jobId);
-    }
-
-    function renderBlockchainEntries(jobId) {
+    function viewJobHistory(jobId) {
       const job = state.jobs.find(j => j.id === jobId);
-      if (!job) return;
+      if (!job) {
+        showToast('Job not found', 'error');
+        return;
+      }
       
-      const entriesContainer = document.getElementById('blockchain-entries-container');
+      const modal = document.getElementById('history-modal');
+      const subtitle = document.getElementById('history-subtitle');
+      const entriesContainer = document.getElementById('history-entries');
+      
+      subtitle.textContent = `${job.customerName} • ${job.id} • ${job.sampleType} Samples`;
+      
       entriesContainer.innerHTML = job.blocks.map((block, index) => {
         const isCompleted = block.status === 'completed';
         const statusClass = isCompleted ? 'completed' : '';
@@ -1695,6 +1644,8 @@
           </div>
         `;
       }).join('');
+      
+      openModal('history-modal');
     }
 
     function copyToClipboard(text) {
@@ -1970,6 +1921,9 @@
       if (role === 'manager') {
         document.getElementById('manager-view').classList.remove('hidden');
         document.getElementById('field-view').classList.add('hidden');
+        renderJobs();
+        renderContracts();
+        renderLedgers();
       } else {
         document.getElementById('manager-view').classList.add('hidden');
         document.getElementById('field-view').classList.remove('hidden');
