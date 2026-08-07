@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Favicon --> <link rel="shortcut icon" href="ai.ico"> <link rel="icon" href="ai.ico"> 
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eCoC BlockchainAI - Environmental Chain of Custody</title>
@@ -257,14 +259,13 @@
   <header class="bg-white shadow-sm sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center">
-          <i class="fa-solid fa-cube text-white text-xl"></i>
-        </div>
+        <div class="w-10 h-10 rounded-lg bg-white-600 text-white flex items-center justify-center">   <img src="ai.png" alt="BlockchainAI"  class="animate-[spin_1s_ease-in-out_5_forwards] h-10 w-10" ></div>
+
         <div>
           <div class="flex items-center gap-2 text-lg font-bold">
             <span class="gradient-text">eCoC</span>
             <span class="text-gray-400">—</span>
-            <img src="https://via.placeholder.com/80x20?text=BlockchainAI" alt="BlockchainAI" class="h-5">
+            <img src="logo4.png?text=BlockchainAI" alt="BlockchainAI" class="h-8">
           </div>
           <div class="text-xs text-gray-500">Environmental Chain of Custody</div>
         </div>
@@ -786,7 +787,7 @@
 
   <!-- New Customer Modal -->
   <div id="new-customer-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop hidden">
-    <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+    <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
       <div class="p-6 border-b flex items-center justify-between gap-3">
         <div>
           <h3 class="text-2xl font-bold gradient-text">Create New Customer</h3>
@@ -962,7 +963,7 @@
 
   <!-- Job History Modal -->
   <div id="history-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop hidden">
-    <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-4dl max-h-[90vh] overflow-y-auto">
       <div class="p-6 border-b flex items-center justify-between gap-3">
         <div>
           <h3 class="text-2xl font-bold gradient-text">Chain of Custody History</h3>
@@ -1023,6 +1024,25 @@
           createdAt: '2026-01-20',
           remittanceAddress: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
           escrowAddress: '0x92Cdcf13863D8C3BcFB5c6C5f4d58b5C4A3f9e1d'
+        },
+        { 
+          id: 'CONT002', 
+          customerId: 'CUST002', 
+          ledgerId: 'LEDGER002', 
+          name: 'Water Quality Analysis', 
+          type: 'analysis', 
+          description: 'Comprehensive water quality testing and analysis services.',
+          value: 3500.00, 
+          currency: 'USD', 
+          status: 'active',
+          milestones: [
+            { id: 1, name: 'Deposit', amount: 25, description: '25% deposit', deadline: '2026-03-10', completed: true },
+            { id: 2, name: 'Sampling', amount: 35, description: 'Payment upon completion of sampling', deadline: '2026-03-20', completed: false },
+            { id: 3, name: 'Final Report', amount: 40, description: 'Payment upon delivery of final report', deadline: '2026-04-01', completed: false }
+          ],
+          createdAt: '2026-02-25',
+          remittanceAddress: '0x1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2',
+          escrowAddress: '0x2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2'
         }
       ],
       jobs: [
@@ -1994,6 +2014,31 @@
       
       // Add initial milestone
       addMilestoneRow();
+      
+      // Populate dropdowns with prototype data
+      const jobExistingCustomerSelect = document.getElementById('job-existing-customer');
+      state.customers.forEach(customer => {
+        const option = document.createElement('option');
+        option.value = customer.id;
+        option.textContent = customer.name;
+        jobExistingCustomerSelect.appendChild(option);
+      });
+      
+      const jobLedgerSelect = document.getElementById('job-ledger');
+      state.ledgers.forEach(ledger => {
+        const option = document.createElement('option');
+        option.value = ledger.id;
+        option.textContent = `${ledger.name} (${ledger.environment})`;
+        jobLedgerSelect.appendChild(option);
+      });
+      
+      const jobContractSelect = document.getElementById('job-contract');
+      state.contracts.forEach(contract => {
+        const option = document.createElement('option');
+        option.value = contract.id;
+        option.textContent = contract.name;
+        jobContractSelect.appendChild(option);
+      });
       
       // Set up event listeners
       document.getElementById('connect-btn').addEventListener('click', connectWallet);
