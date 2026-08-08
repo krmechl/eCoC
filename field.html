@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arcee CoC Tracker | Blockchain Edition</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- PDF.js for PDF rendering -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- jsPDF for generating sample PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00d4ff',
+                        'cyber-dark': '#0a192f',
+                        'paper-gray': '#f5f5f5',
+                        'accent': '#6366f1'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles & Overrides */
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        
+        /* Tooltip Styles */
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px; /* Center horizontally */
+            width: 200px;
+            padding: 5px 0;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Modal Backdrop */
+        .modal-backdrop {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(90deg, #6366f1, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* PDF Viewer Styles */
+        #pdf-render-canvas {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            height: auto;
+        }
+
+        .pdf-placeholder {
+            background: #f9fafb;
+            border: 2px dashed #e5e7eb;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .pdf-placeholder i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #00d4ff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-cyber-dark text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm.px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
+                    <span class="text-xl font-bold tracking-tight">Arcee <span class="text-cyber-blue">CoC</span></span>
+                </div>
+                <div class="flex items-center">
+                    <div class="mr-4 text-right hidden sm:block">
+                        <div class="user-name text-sm font-medium">Mark D.</div>
+                        <div class="user-role text-xs text-gray-400">Field Agent</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyber-blue to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
+                        MD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="flex">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-md z-30 hidden md:block">
+            <div class="p-6">
+                <div class="flex items-center mb-6">
+                    <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
+                    <span class="text-lg font-bold">Arcee CoC</span>
+                </div>
+                
+                <nav class="space-y-2">
+                    <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                        <i class="fa-solid fa-chart-pie w-5 text-center group-hover:text-cyber-blue"></i>
+                        <span class="font-medium">Dashboard</span>
+                    </button>
+                    <button onclick="navigateTo('field-jobs')" id="nav-field-jobs" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                        <i class="fa-solid fa-clipboard-list w-5 text-center group-hover:text-cyber-blue"></i>
+                        <span class="font-medium">Field Jobs</span>
+                    </button>
+                    <button onclick="navigateTo('ledgers')" id="nav-ledgers" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                        <i class="fa-solid fa-book-open w-5 text-center group-hover:text-cyber-blue"></i>
+                        <span class="font-medium">View Ledgers</span>
+                    </button>
+                    <button onclick="navigateTo('settings')" id="nav-settings" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                        <i class="fa-solid fa-gear w-5 text-center group-hover:text-cyber-blue"></i>
+                        <span class="font-medium">Settings</span>
+                    </button>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6 md:p-8 bg-paper-gray min-h-screen">
+            
+            <!-- Dynamic Content Container -->
+            <div id="app-content" class="max-w-6xl mx-auto">
+                <!-- Content will be rendered here by JavaScript -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Scan CoC Modal -->
+    <div id="scan-coc-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 hidden modal-backdrop">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-2xl font-bold gradient-text">Scan Chain of Custody</h3>
+                    <p class="text-gray-600 mt-1">Upload and verify a paper CoC document</p>
+                </div>
+                <button type="button" id="close-scan-coc-modal" class="text-gray-500 hover:text-gray-800 text-xl">&times;</button>
+            </div>
+            
+            <div class="p-6 space-y-6">
+                <!-- PDF Preview Section -->
+                <div class="space-y-4">
+                    <h4 class="font-semibold text-lg">Document Preview</h4>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center bg-gray-50">
+                        <div id="pdf-placeholder" class="pdf-placeholder">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <p>PDF will appear here</p>
+                            <p class="text-sm text-gray-500 mt-2">Simulated scan of paper CoC</p>
+                        </div>
+                        <div id="pdf-render-container" class="hidden w-full h-auto flex justify-center">
+                            <canvas id="pdf-render-canvas"></canvas>
+                        </div>
+                        <div id="pdf-loading" class="hidden flex justify-center items-center mt-4">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- File Upload -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Select PDF File</label>
+                            <div class="border-2 border-dashed border-blue-500 rounded-lg p-4 text-center hover:bg-blue-50 transition">
+                                <input type="file" id="coc-pdf-upload" accept=".pdf" class="hidden">
+                                <label for="coc-pdf-upload" class="cursor-pointer">
+                                    <i class="fa-solid fa-cloud-arrow-up text-blue-600 text-xl mb-2"></i>
+                                    <p class="text-sm font-medium">Click to upload PDF</p>
+                                    <p class="text-xs text-gray-500">or simulate with sample</p>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Sample CoC (Demo)</label>
+                            <button id="load-sample-coc" class="w-full px-4 py-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 transition">
+                                <i class="fa-solid fa-magic mr-2"></i> Load Sample CoC
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Dynamic Data Entry -->
+                <div class="space-y-4 border-t pt-6">
+                    <h4 class="font-semibold text-lg">Activity Details</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Timestamp</label>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="coc-timestamp" readonly class="w-full form-input rounded-lg px-3 py-2 bg-gray-100" value="">
+                                <button id="refresh-timestamp" class="px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 text-gray-600" title="Refresh Timestamp">
+                                    <i class="fa-solid fa-refresh"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">GPS Location</label>
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="coc-gps" readonly class="w-full form-input rounded-lg px-3 py-2 bg-gray-100" value="40.4406° N, 79.9959° W">
+                                <button id="refresh-gps" class="px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 text-gray-600" title="Refresh GPS">
+                                    <i class="fa-solid fa-location-crosshairs"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Activity Description</label>
+                        <textarea id="coc-description" class="w-full form-input rounded-lg px-3 py-2" rows="3" placeholder="Describe what's happening with this CoC (e.g., 'Samples transferred to FedEx, tracking #123456')"></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Signer</label>
+                            <input type="text" id="coc-signer" class="w-full form-input rounded-lg px-3 py-2" placeholder="Your name">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Recipient</label>
+                            <input type="text" id="coc-recipient" class="w-full form-input rounded-lg px-3 py-2" placeholder="Who received the samples">
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between pt-4 border-t">
+                        <button type="button" id="cancel-scan-coc" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 font-medium transition">
+                            Cancel
+                        </button>
+                        <button type="button" id="submit-scan-coc" class="px-5 py-2 rounded-lg bg-gradient-to-r from-green-600 to-teal-700 text-white font-medium transition">
+                            <i class="fa-solid fa-check mr-2"></i> Submit Scan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Ledgers Modal (Simplified for prototype) -->
+    <div id="view-ledgers-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 hidden modal-backdrop">
+        <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div class="p-6 border-b flex items-center justify-between gap-3">
+                <div>
+                    <h3 class="text-2xl font-bold gradient-text">Blockchain Ledger</h3>
+                    <p class="text-gray-600 mt-1">View all transactions and CoC scans</p>
+                </div>
+                <button type="button" id="close-ledgers-modal" class="text-gray-500 hover:text-gray-800 text-xl">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4 flex justify-between items-center">
+                    <h4 class="text-lg font-semibold">Recent Entries</h4>
+                    <button onclick="closeModal('view-ledgers-modal')" class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm">Close</button>
+                </div>
+                <div id="blockchain-entries-container" class="space-y-3">
+                    <!-- Entries will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        // ==========================================
+        // PDF.JS SETUP
+        // ==========================================
+        let pdfjsLibLoaded = false;
+        
+        function loadPDFJS() {
+            if (pdfjsLibLoaded) return;
+            
+            // Set the worker source
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            pdfjsLibLoaded = true;
+        }
+
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        const state = {
+            currentView: 'dashboard',
+            jobs: [
+                {
+                    id: 'JOB001',
+                    customer: 'Acme Corp',
+                    type: 'Soil Analysis',
+                    status: 'pending',
+                    pickupDate: '2023-10-25',
+                    location: 'Pittsburgh, PA',
+                    fieldAgent: 'Mark D.'
+                },
+                {
+                    id: 'JOB002',
+                    customer: 'TechStart Inc.',
+                    type: 'Water Quality',
+                    status: 'in_transit',
+                    pickupDate: '2023-10-26',
+                    location: 'San Francisco, CA',
+                    fieldAgent: 'Sarah J.'
+                },
+                {
+                    id: 'JOB003',
+                    customer: 'Global Industries',
+                    type: 'Chemical Profiling',
+                    status: 'completed',
+                    pickupDate: '2023-10-20',
+                    location: 'Houston, TX',
+                    fieldAgent: 'Mike T.'
+                }
+            ],
+            fieldJobs: [
+                {
+                    id: 'FJ-101',
+                    jobId: 'JOB001',
+                    status: 'pending_pickup',
+                    location: 'Pittsburgh Office',
+                    lastUpdated: '2023-10-24 14:30'
+                },
+                {
+                    id: 'FJ-102',
+                    jobId: 'JOB002',
+                    status: 'in_transit',
+                    location: 'I-5 Corridor',
+                    lastUpdated: '2023-10-25 09:15'
+                }
+            ],
+            blockchain: [
+                {
+                    index: 0,
+                    hash: '0x' + 'a1b2c3d4e5f6'.toUpperCase(),
+                    timestamp: '2023-10-20 08:00',
+                    title: 'Genesis Block',
+                    text: 'Initial setup of the Arcee CoC blockchain',
+                    status: 'confirmed'
+                },
+                {
+                    index: 1,
+                    hash: '0x' + 'b2c3d4e5f6a1'.toUpperCase(),
+                    timestamp: '2023-10-20 10:30',
+                    title: 'Job Created',
+                    text: 'JOB003 created for Global Industries',
+                    status: 'confirmed'
+                },
+                {
+                    index: 2,
+                    hash: '0x' + 'c3d4e5f6a1b2'.toUpperCase(),
+                    timestamp: '2023-10-20 14:00',
+                    title: 'Sample Pickup',
+                    text: 'Field agent Mike T. picked up samples from Houston, TX',
+                    status: 'confirmed'
+                }
+            ],
+            // Store CoC scans for this session
+            cocScans: [],
+            // Mock transactions for stats
+            transactions: [
+                { hash: '0x' + 'abc123'.toUpperCase(), type: 'pickup', amount: 0, status: 'confirmed', time: '2023-10-20 10:30', currency: 'USD' },
+                { hash: '0x' + 'def456'.toUpperCase(), type: 'analysis', amount: 150, status: 'confirmed', time: '2023-10-21 09:00', currency: 'USD' },
+                { hash: '0x' + 'ghi789'.toUpperCase(), type: 'transfer', amount: 0, status: 'confirmed', time: '2023-10-22 16:45', currency: 'USD' }
+            ]
+        };
+
+
+   // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function generateHash(prefix) {
+            // Simple mock hash generator
+            return '0x' + Array(8).fill(0).map(() => Math.floor(Math.random() * 16).toString(16)).join('').toUpperCase();
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            // Icon based on type
+            const icon = type === 'success' ? 'fa-circle-check text-green-500' : 'fa-circle-exclamation text-red-500';
+            
+            toast.className = `flex items-center gap-3 px-4 py-3 rounded-lg shadow-md transform transition-all translate-y-10 opacity-0 bg-white border-l-4 ${
+                type === 'success' ? 'border-green-500' : 'border-red-500'
+            }`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icon}"></i>
+                <span class="font-medium text-sm">${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Hash copied to clipboard!');
+            });
+        }
+
+        // ==========================================
+        // NAVIGATION
+        // ==========================================
+        function navigateTo(viewName) {
+            state.currentView = viewName;
+            
+            // Update sidebar active state
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-gray-100', 'text-cyber-blue', 'border-r-2', 'border-cyber-blue');
+                btn.classList.add('text-gray-600');
+            });
+            
+            const activeBtn = document.getElementById(`nav-${viewName}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-gray-600');
+                activeBtn.classList.add('bg-gray-100', 'text-cyber-blue', 'border-r-2', 'border-cyber-blue');
+            }
+            
+            // Render the view
+            renderView();
+        }
+
+        function renderView() {
+            const contentContainer = document.getElementById('app-content');
+            
+            switch (state.currentView) {
+                case 'dashboard':
+                    contentContainer.innerHTML = renderDashboard();
+                    break;
+                case 'field-jobs':
+                    contentContainer.innerHTML = renderFieldJobs();
+                    break;
+                case 'ledgers':
+                    contentContainer.innerHTML = renderLedgers();
+                    break;
+                case 'settings':
+                    contentContainer.innerHTML = renderSettings();
+                    break;
+                default:
+                    contentContainer.innerHTML = renderDashboard();
+            }
+        }
+
+        // ==========================================
+        // VIEW RENDERERS
+        // ==========================================
+        function renderDashboard() {
+            const totalJobs = state.jobs.length;
+            const pendingJobs = state.jobs.filter(j => j.status === 'pending').length;
+            const inTransitJobs = state.jobs.filter(j => j.status === 'in_transit').length;
+            const totalRevenue = state.transactions.reduce((sum, t) => sum + t.amount, 0);
+            
+            return `
+                <div class="space-y-8">
+                    <!-- Header -->
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+                        <p class="text-gray-600 mt-2">Real-time overview of your chain of custody operations.</p>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">Total Jobs</h3>
+                                    <div class="text-2xl font-bold text-gray-900 mt-1">${totalJobs}</div>
+                                </div>
+                                <i class="fa-solid fa-clipboard text-cyber-blue text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">Pending</h3>
+                                    <div class="text-2xl font-bold text-gray-900 mt-1">${pendingJobs}</div>
+                                </div>
+                                <i class="fa-solid fa-hourglass text-yellow-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">In Transit</h3>
+                                    <div class="text-2xl font-bold text-gray-900 mt-1">${inTransitJobs}</div>
+                                </div>
+                                <i class="fa-solid fa-truck text-blue-500 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-sm font-medium text-gray-500">Revenue (M)$</h3>
+                                    <div class="text-2xl font-bold text-gray-900 mt-1">${formatCurrency(totalRevenue)}</div>
+                                </div>
+                                <i class="fa-solid fa-dollar-sign text-green-500 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity Table -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="px-6 py-4 border-b flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">Recent Blockchain Entries</h3>
+                            <button onclick="openModal('view-ledgers-modal')" class="text-cyber-blue text-sm font-medium hover:underline">
+                                View All <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm text-left text-gray-600">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Hash</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Title</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Timestamp</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${state.blockchain.map(block => `
+                                        <tr class="border-t border-gray-100 hover:bg-gray-50">
+                                            <td class="px-6 py-4 font-mono text-xs text-gray-500 break-all">${block.hash}</td>
+                                            <td class="px-6 py-4">
+                                                <div class="font-medium text-gray-900">${block.title}</div>
+                                                <div class="text-xs text-gray-500">${block.text}</div>
+                                            </td>
+                                            <td class="px-6 py-4">${block.timestamp}</td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                    ${block.status}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFieldJobs() {
+            return `
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h1 class="text-3xl font-bold text-gray-900">Field Jobs</h1>
+                        <button onclick="openModal('scan-coc-modal')" class="px-4 py-2 rounded-lg bg-cyber-blue text-white hover:bg-blue-600 transition flex items-center gap-2">
+                            <i class="fa-solid fa-qrcode"></i> Scan CoC
+                        </button>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm text-left text-gray-600">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th class="px-6 py-3 font-medium text-gray-700">ID</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Job</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Status</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Location</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Last Updated</th>
+                                        <th class="px-6 py-3 font-medium text-gray-700">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${state.fieldJobs.map(job => `
+                                        <tr class="border-t border-gray-100 hover:bg-gray-50">
+                                            <td class="px-6 py-4 font-mono text-xs text-gray-500">${job.id}</td>
+                                            <td class="px-6 py-4">
+                                                <div class="font-medium text-gray-900">${job.jobId}</div>
+                                                <div class="text-xs text-gray-500">Linked to customer job</div>
+                                            </td>
+                                            <td class="px-6 py-4">
+                                                <span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                                    ${job.status.replace('_', ' ').toUpperCase()}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4">${job.location}</td>
+                                            <td class="px-6 py-4">${job.lastUpdated}</td>
+                                            <td class="px-6 py-4">
+                                                <button onclick="showToast('Scanning for job ${job.id}...', 'info')" class="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium transition">
+                                                    <i class="fa-solid fa-qrcode mr-1"></i> Scan
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderLedgers() {
+            return `
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center">
+                        <h1 class="text-3xl font-bold text-gray-900">Blockchain Ledger</h1>
+                        <button onclick="openModal('view-ledgers-modal')" class="px-4 py-2 rounded-lg bg-cyber-blue text-white hover:bg-blue-600 transition">
+                            <i class="fa-solid fa-eye mr-2"></i> View Detailed Ledger
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Blockchain Stats -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="text-lg font-semibold mb-4">Network Stats</h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-sm text-gray-500">Total Blocks</div>
+                                    <div class="text-2xl font-bold text-gray-900">${state.blockchain.length}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500">Total Transactions</div>
+                                    <div class="text-2xl font-bold text-gray-900">${state.transactions.length}</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500">Network Hash Rate</div>
+                                    <div class="text-xl font-bold text-gray-900">245 TH/s</div>
+                                </div>
+                                <div>
+                                    <div class="text-sm text-gray-500">Difficulty</div>
+                                    <div class="text-xl font-bold text-gray-900">28.4T</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Recent Transactions -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h3 class="text-lg font-semibold mb-4">Recent Transactions</h3>
+                            <ul class="space-y-3">
+                                ${state.transactions.slice(0, 5).map(tx => `
+                                    <li class="flex items-center justify-between py-2 border-b border-gray-100">
+                                        <div>
+                                            <div class="font-medium text-gray-900">${tx.type.replace('_', ' ').toUpperCase()}</div>
+                                            <div class="text-xs text-gray-500">${tx.time}</div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="font-medium text-gray-900">${tx.amount > 0 ? formatCurrency(tx.amount) : ''}</div>
+                                            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800">${tx.status}</span>
+                                        </div>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSettings() {
+            return `
+                <div class="max-w-4xl mx-auto">
+                    <h1 class="text-3xl font-bold text-gray-900 mb-8">Settings</h1>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                        <h3 class="text-lg font-semibold mb-4">System Configuration</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
+                                <div>
+                                    <div class="font-medium text-gray-900">Blockchain Node URL</div>
+                                    <div class="text-sm text-gray-500">Mainnet endpoint for transaction signing</div>
+                                </div>
+                                <span class="font-mono text-xs text-gray-600">https://rpc.arceri.io</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
+                                <div>
+                                    <div class="font-medium text-gray-900">IPFS Gateway</div>
+                                    <div class="text-sm text-gray-500">Gateway for document storage</div>
+                                </div>
+                                <span class="font-mono text-xs text-green-600">ipfs.arceri.io</span>
+                            </div>
+                            <div class="flex items-center justify-between p-4 border border-gray-100 rounded-lg">
+                                <div>
+                                    <div class="font-medium text-gray-900">CoC Verification</div>
+                                    <div class="text-sm text-gray-500">Enable hybrid paper-digital verification</div>
+                                </div>
+                                <div class="tooltip">
+                                    <i class="fa-solid fa-toggle-on text-2xl text-cyber-blue"></i>
+                                    <span class="tooltiptext">Hybrid verification mode is active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ==========================================
+        // MODAL & INTERACTION HANDLERS
+        // ==========================================
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('hidden');
+            // Refresh timestamp when opening scan modal
+            if (modalId === 'scan-coc-modal') {
+                refreshTimestamp();
+                refreshGPS();
+                // Load PDF.js if not already loaded
+                loadPDFJS();
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('hidden');
+        }
+
+        // ==========================================
+        // SCAN COC FEATURE LOGIC
+        // ==========================================
+        async function loadSampleCoC() {
+            // Show loading indicator
+            document.getElementById('pdf-loading').classList.remove('hidden');
+            document.getElementById('pdf-placeholder').classList.add('hidden');
+            
+            try {
+                // Use jsPDF to generate a sample PDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setTextColor(100, 100, 100);
+                doc.setFontSize(20);
+                doc.text('Sample Chain of Custody', 20, 20);
+                doc.setFontSize(12);
+                doc.text('This is a sample CoC document for demonstration purposes.', 20, 40);
+                doc.text('Date: ' + new Date().toLocaleDateString(), 20, 60);
+                doc.text('Field Agent: Mark D.', 20, 80);
+                doc.text('GPS Location: 40.4406° N, 79.9959° W', 20, 100);
+                doc.text('Samples: Soil, Water, Air', 20, 120);
+                doc.text('Description: Routine environmental monitoring.', 20, 140);
+                doc.text('Signature: _________________________', 20, 160);
+
+                // Get the PDF as an ArrayBuffer
+                const arrayBuffer = doc.output('arraybuffer');
+
+                // Convert to blob
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+
+                renderPDF(blob);
+                showToast('Sample CoC generated!');
+            } catch (error) {
+                console.error('Error generating sample PDF:', error);
+                showToast('Error generating sample PDF. Please try uploading your own PDF.', 'error');
+                document.getElementById('pdf-loading').classList.add('hidden');
+                document.getElementById('pdf-placeholder').classList.remove('hidden');
+            }
+        }
+
+        async function renderPDF(file) {
+            // Ensure PDF.js is loaded
+            loadPDFJS();
+            
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const typedarray = new Uint8Array(e.target.result);
+                    const loadingTask = pdfjsLib.getDocument(typedarray);
+                    const pdf = await loadingTask.promise;
+                    
+                    // Render first page
+                    const page = await pdf.getPage(1);
+                    const viewport = page.getViewport({ scale: 1.5 }); // Scale for better visibility
+                    
+                    const canvas = document.getElementById('pdf-render-canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    
+                    await page.render(renderContext).promise;
+                    
+                    // Show canvas, hide placeholder and loading
+                    document.getElementById('pdf-placeholder').classList.add('hidden');
+                    document.getElementById('pdf-render-container').classList.remove('hidden');
+                    document.getElementById('pdf-loading').classList.add('hidden');
+                    
+                    showToast('PDF rendered successfully!');
+                } catch (error) {
+                    console.error('Error rendering PDF:', error);
+                    showToast('Error rendering PDF. Please try a different file.', 'error');
+                    document.getElementById('pdf-loading').classList.add('hidden');
+                    document.getElementById('pdf-placeholder').classList.remove('hidden');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function refreshTimestamp() {
+            const now = new Date();
+            const formatted = now.toLocaleString('en-US', { 
+                month: 'short', 
+                day: 'numeric', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            document.getElementById('coc-timestamp').value = formatted;
+        }
+
+        function refreshGPS() {
+            // Simulate GPS coordinates (could be real with navigator.geolocation)
+            const locations = [
+                '40.4406° N, 79.9959° W',  // Pittsburgh
+                '37.7749° N, 122.4194° W',  // San Francisco
+                '51.5074° N, 0.1278° W',    // London
+                '48.8566° N, 2.3522° E',    // Paris
+                '35.6895° N, 139.6917° E'   // Tokyo
+            ];
+            
+            const randomLocation = locations[Math.floor(Math.random() * locations.length)];
+            document.getElementById('coc-gps').value = randomLocation;
+        }
+
+        function submitScanCoC() {
+            const timestamp = document.getElementById('coc-timestamp').value;
+            const gps = document.getElementById('coc-gps').value;
+            const description = document.getElementById('coc-description').value;
+            const signer = document.getElementById('coc-signer').value;
+            const recipient = document.getElementById('coc-recipient').value;
+            
+            if (!timestamp || !gps || !description || !signer || !recipient) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Create a new ledger entry
+            const newEntry = {
+                id: `SCAN${String(state.cocScans.length + 1).padStart(3, '0')}`,
+                type: 'coc_scan',
+                timestamp: timestamp,
+                gps: gps,
+                description: description,
+                signer: signer,
+                recipient: recipient,
+                status: 'verified',
+                ipfsHash: generateHash('ipfs') // Simulate IPFS hash
+            };
+            
+            // Add to state
+            state.cocScans.push(newEntry);
+            
+            // Also add to transactions for stats
+            state.transactions.unshift({
+                hash: generateHash('tx'),
+                type: 'coc_scan',
+                amount: 0,
+                status: 'confirmed',
+                time: timestamp,
+                currency: 'USD'
+            });
+            
+            // Update View Ledgers modal with new entry
+            updateLedgerEntries();
+            
+            // Close modal and show success
+            closeModal('scan-coc-modal');
+            showToast('CoC scan verified and added to blockchain!');
+            
+            // Refresh stats
+            updateStats();
+        }
+
+        function updateLedgerEntries() {
+            const entriesContainer = document.getElementById('blockchain-entries-container');
+            
+            if (state.cocScans.length === 0) {
+                entriesContainer.innerHTML = '<div class="text-gray-500 text-center p-4">No CoC scans yet.</div>';
+                return;
+            }
+            
+            entriesContainer.innerHTML = state.cocScans.map((scan, index) => `
+                <div class="timeline-item completed border border-gray-100 rounded-2xl p-4 bg-white">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                                ${index + 1}
+                            </div>
+                            <div>
+                                <div class="font-semibold text-sm text-gray-900">CoC Scan #${scan.id}</div>
+                                <div class="text-xs text-gray-500">${scan.timestamp}</div>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">Verified</span>
+                    </div>
+                    
+                    <div class="space-y-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-user text-gray-400"></i>
+                            <span class="text-sm text-gray-700">Signer: ${scan.signer}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-user-plus text-gray-400"></i>
+                            <span class="text-sm text-gray-700">Recipient: ${scan.recipient}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-location-crosshairs text-gray-400"></i>
+                            <span class="text-sm text-gray-700">GPS: ${scan.gps}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-sm text-gray-700 leading-relaxed mb-3">
+                        ${scan.description}
+                    </div>
+                    
+                    <div class="blockchain-hash font-mono text-xs break-all bg-gray-900 text-gray-100 rounded-lg p-3">
+                        ${scan.ipfsHash}
+                    </div>
+                    
+                    <button onclick="copyToClipboard('${scan.ipfsHash}')" class="mt-2 px-3 py-1 rounded bg-blue-100 text-blue-600 text-xs hover:bg-blue-200 transition">
+                        <i class="fa-solid fa-copy mr-1"></i> Copy IPFS Hash
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function updateStats() {
+            // Update dashboard stats if visible
+            if (state.currentView === 'dashboard') {
+                const totalJobs = state.jobs.length;
+                const pendingJobs = state.jobs.filter(j => j.status === 'pending').length;
+                const inTransitJobs = state.jobs.filter(j => j.status === 'in_transit').length;
+                const totalRevenue = state.transactions.reduce((sum, t) => sum + t.amount, 0);
+                
+                // Update DOM elements (simplified for demo)
+                // In a real app, you'd re-render the specific parts
+                renderView();
+            }
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set initial timestamp
+            refreshTimestamp();
+            
+            // Attach navigation button listeners
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const viewName = btn.id.replace('nav-', '');
+                    navigateTo(viewName);
+                });
+            });
+            
+            // Attach modal close buttons
+            document.getElementById('close-scan-coc-modal')?.addEventListener('click', () => closeModal('scan-coc-modal'));
+            document.getElementById('cancel-scan-coc')?.addEventListener('click', () => closeModal('scan-coc-modal'));
+            document.getElementById('close-ledgers-modal')?.addEventListener('click', () => closeModal('view-ledgers-modal'));
+            
+            // Attach Scan CoC modal specific buttons
+            document.getElementById('load-sample-coc')?.addEventListener('click', loadSampleCoC);
+            document.getElementById('refresh-timestamp')?.addEventListener('click', refreshTimestamp);
+            document.getElementById('refresh-gps')?.addEventListener('click', refreshGPS);
+            document.getElementById('submit-scan-coc')?.addEventListener('click', submitScanCoC);
+            
+            // File upload for Scan CoC modal
+            document.getElementById('coc-pdf-upload')?.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    renderPDF(e.target.files[0]);
+                }
+            });
+            
+            // Navigate to dashboard by default
+            navigateTo('dashboard');
+            
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+                backdrop.addEventListener('click', (e) => {
+                    if (e.target === backdrop) {
+                        backdrop.classList.add('hidden');
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>
