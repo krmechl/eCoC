@@ -167,90 +167,9 @@
             background-size: 16px;
             padding-right: 36px;
         }
-
-        /* Mobile Sidebar Toggle */
-        .mobile-sidebar-toggle {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50;
-            background: linear-gradient(135deg, #6366f1, #00d4ff);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-        }
-
-        .mobile-sidebar-toggle:active {
-            transform: scale(0.95);
-        }
-
-        .mobile-sidebar-toggle i {
-            font-size: 1.5rem;
-        }
-
-        /* Sidebar Transition */
-        .sidebar-transition {
-            transition: all 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-sidebar-toggle {
-                display: flex;
-            }
-            
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                width: 280px;
-                transform: translateX(-100%);
-                z-index: 40;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .sidebar-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                z-index: 35;
-                display: none;
-            }
-            
-            .sidebar-overlay.active {
-                display: block;
-            }
-            
-            .main-content {
-                margin-left: 0 !important;
-            }
-        }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
-
-    <!-- Mobile Sidebar Toggle Button -->
-    <button id="mobile-sidebar-toggle" class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-
-    <!-- Sidebar Overlay for mobile -->
-    <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
     <!-- Navigation Bar -->
     <nav class="bg-cyber-dark text-white shadow-md sticky top-0 z-40">
@@ -277,7 +196,7 @@
     <div class="flex">
         
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-64 bg-white shadow-md z-30 hidden md:block sidebar-transition">
+        <aside class="w-64 bg-white shadow-md z-30 hidden md:block">
             <div class="p-6">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
@@ -306,7 +225,7 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main id="main-content" class="flex-1 p-6 md:p-8 bg-paper-gray min-h-screen main-content">
+        <main class="flex-1 p-6 md:p-8 bg-paper-gray min-h-screen">
             
             <!-- Dynamic Content Container -->
             <div id="app-content" class="max-w-6xl mx-auto">
@@ -1282,27 +1201,6 @@
         }
 
         // ==========================================
-        // SIDEBAR TOGGLE FUNCTIONS
-        // ==========================================
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const isClosed = sidebar.classList.contains('active');
-            
-            if (isClosed) {
-                // Close the sidebar
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            } else {
-                // Open the sidebar
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        // ==========================================
         // INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
@@ -1345,10 +1243,6 @@
             
             // Refresh button
             document.getElementById('refresh-github-list')?.addEventListener('click', refreshGitHubPDFs);
-            
-            // Sidebar toggle
-            document.getElementById('mobile-sidebar-toggle')?.addEventListener('click', toggleSidebar);
-            document.getElementById('sidebar-overlay')?.addEventListener('click', toggleSidebar);
             
             // Navigate to dashboard by default
             navigateTo('dashboard');
