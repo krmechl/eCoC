@@ -277,7 +277,12 @@
                                     <select id="github-pdf-select" class="github-file-select w-full form-input rounded-lg px-3 py-2 mt-2">
                                         <option value="">Loading files from GitHub...</option>
                                     </select>
-                                    <p class="text-xs text-gray-500 mt-2 text-center">Select a PDF file from the repository</p>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <p class="text-xs text-gray-500">Select a PDF from the repository</p>
+                                        <button id="refresh-github-list" class="text-xs text-green-600 hover:text-green-800 flex items-center gap-1">
+                                            <i class="fa-solid fa-rotate-right"></i> Refresh List
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -842,15 +847,20 @@
         // ==========================================
         async function fetchGitHubPDFs() {
             try {
-                // Check cache first
+                // Check if we have a cached version and if it's less than 1 hour old
                 const cached = localStorage.getItem(GITHUB_CACHE_KEY);
                 if (cached) {
-                    const pdfs = JSON.parse(cached);
-                    populateGitHubDropdown(pdfs);
-                    return;
+                    const data = JSON.parse(cached);
+                    const age = Date.now() - data.timestamp;
+                    // If cache is less than 1 hour old, use it
+                    if (age < 3600000) {
+                        populateGitHubDropdown(data.pdfs);
+                        return;
+                    }
                 }
 
-                showToast('Fetching PDF list from GitHub...', 'info');
+                // If we get here, we need to fetch fresh data
+                showToast('Fetching fresh PDF list from GitHub...', 'info');
 
                 const response = await fetch(`${GITHUB_API_URL}${GITHUB_REPO}/contents`, {
                     headers: {
@@ -879,6 +889,17 @@
                 console.error('Error fetching GitHub files:', error);
                 showToast('Failed to fetch PDF list from GitHub. Please try again.', 'error');
             }
+        }
+
+        function refreshGitHubPDFs() {
+            // Clear the cache
+            localStorage.removeItem(GITHUB_CACHE_KEY);
+            // Show loading state
+            const select = document.getElementById('github-pdf-select');
+            select.innerHTML = '<option value="">Refreshing files from GitHub...</option>';
+            // Fetch fresh data
+            fetchGitHubPDFs();
+            showToast('GitHub file list refreshed!');
         }
 
         function populateGitHubDropdown(pdfs) {
@@ -1191,6 +1212,9 @@
                     loadPDFFromGitHub(this.value);
                 }
             });
+            
+            // Refresh button
+            document.getElementById('refresh-github-list')?.addEventListener('click', refreshGitHubPDFs);
             
             // Navigate to dashboard by default
             navigateTo('dashboard');
