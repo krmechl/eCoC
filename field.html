@@ -281,7 +281,7 @@
             <div class="p-6">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
-                    <span class="text-lg font-bold">kirk CoC</span>
+                    <span class="text-lg font-bold">KRM CoC</span>
                 </div>
                 
                 <nav class="space-y-2">
@@ -1309,17 +1309,19 @@
             // Set initial timestamp
             refreshTimestamp();
             
-            // Attach navigation button listeners
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const viewName = this.id.replace('nav-', '');
+            // Attach navigation button listeners using event delegation
+            // We attach a single listener to the main content area that handles clicks on any .nav-btn
+            document.getElementById('main-content').addEventListener('click', function(e) {
+                const navBtn = e.target.closest('.nav-btn');
+                if (navBtn) {
+                    const viewName = navBtn.id.replace('nav-', '');
                     navigateTo(viewName);
                     
                     // Close the sidebar on mobile after navigation
                     if (window.innerWidth <= 768) {
                         toggleSidebar();
                     }
-                });
+                }
             });
             
             // Attach modal close buttons
