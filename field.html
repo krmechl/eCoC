@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<!-- Favicon --> <link rel="shortcut icon" href="ai.ico"> <link rel="icon" href="ai.ico"> 
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>eCoC Tracker | AIBlockchain</title>
+    <title>Arcee CoC Tracker | Blockchain Edition</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -170,38 +167,121 @@
             background-size: 16px;
             padding-right: 36px;
         }
+
+        /* Mobile Sidebar Toggle */
+        .mobile-sidebar-toggle {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 50;
+            background: linear-gradient(135deg, #6366f1, #00d4ff);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-sidebar-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .mobile-sidebar-toggle i {
+            font-size: 1.5rem;
+        }
+
+        /* Sidebar Transition */
+        .sidebar-transition {
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-sidebar-toggle {
+                display: flex;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 280px;
+                transform: translateX(-100%);
+                z-index: 50;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.5);
+                z-index: 45;
+                display: none;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+            }
+        }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
 
+    <!-- Mobile Sidebar Toggle Button -->
+    <button id="mobile-sidebar-toggle" class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+
+    <!-- Sidebar Overlay for mobile -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
     <!-- Navigation Bar -->
     <nav class="bg-cyber-dark text-white shadow-md sticky top-0 z-40">
-          <!-- Header -->
-  <header class="bg-white shadow-sm sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-lg bg-white-600 text-white flex items-center justify-center">   <img src="ai.png" alt="BlockchainAI"  class="animate-[spin_1s_ease-in-out_5_forwards] h-10 w-10" ></div>
-
-        <div>
-          <div class="flex items-center gap-2 text-lg font-bold">
-            <span class="gradient-text">eCoC</span>
-            <span class="text-gray-400">—</span>
-            <img src="logo4.png?text=BlockchainAI" alt="BlockchainAI" class="h-8">
-          </div>
-          <div class="text-xs text-gray-500">BlockchainAI Chain of Custody</div>
+        <div class="max-w-7xl mx-auto px-4 sm.px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
+                    <span class="text-xl font-bold tracking-tight">Arcee <span class="text-cyber-blue">CoC</span></span>
+                </div>
+                <div class="flex items-center">
+                    <div class="mr-4 text-right hidden sm:block">
+                        <div class="user-name text-sm font-medium">Mark D.</div>
+                        <div class="user-role text-xs text-gray-400">Field Agent</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyber-blue to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
+                        MD
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </nav>
 
     <!-- Main Layout -->
     <div class="flex">
         
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-md z-30 hidden md:block">
+        <aside id="sidebar" class="sidebar w-64 bg-white shadow-md z-30 md:block sidebar-transition">
             <div class="p-6">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
-                    <span class="text-lg font-bold">Field Tech</span>
+                    <span class="text-lg font-bold">Arcee CoC</span>
                 </div>
                 
                 <nav class="space-y-2">
@@ -226,7 +306,7 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 p-6 md:p-8 bg-paper-gray min-h-screen">
+        <main id="main-content" class="flex-1 p-6 md:p-8 bg-paper-gray min-h-screen main-content">
             
             <!-- Dynamic Content Container -->
             <div id="app-content" class="max-w-6xl mx-auto">
@@ -605,7 +685,7 @@
                 <div class="space-y-8">
                     <!-- Header -->
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Field Tech Dashboard</h1>
+                        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
                         <p class="text-gray-600 mt-2">Real-time overview of your chain of custody operations.</p>
                     </div>
                     
@@ -1060,7 +1140,7 @@
                 month: 'short', 
                 day: 'numeric', 
                 year: 'numeric',
-                hour: '2-digit',
+                hour: '2-digit', 
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
@@ -1202,6 +1282,27 @@
         }
 
         // ==========================================
+        // SIDEBAR TOGGLE FUNCTIONS
+        // ==========================================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const isClosed = sidebar.classList.contains('active');
+            
+            if (isClosed) {
+                // Close the sidebar
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            } else {
+                // Open the sidebar
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // ==========================================
         // INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
@@ -1244,6 +1345,10 @@
             
             // Refresh button
             document.getElementById('refresh-github-list')?.addEventListener('click', refreshGitHubPDFs);
+            
+            // Sidebar toggle
+            document.getElementById('mobile-sidebar-toggle')?.addEventListener('click', toggleSidebar);
+            document.getElementById('sidebar-overlay')?.addEventListener('click', toggleSidebar);
             
             // Navigate to dashboard by default
             navigateTo('dashboard');
