@@ -285,19 +285,19 @@
                 </div>
                 
                 <nav class="space-y-2">
-                    <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button id="nav-dashboard" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-chart-pie w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">Dashboard</span>
                     </button>
-                    <button onclick="navigateTo('field-jobs')" id="nav-field-jobs" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button id="nav-field-jobs" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-clipboard-list w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">Field Jobs</span>
                     </button>
-                    <button onclick="navigateTo('ledgers')" id="nav-ledgers" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button id="nav-ledgers" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-book-open w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">View Ledgers</span>
                     </button>
-                    <button onclick="navigateTo('settings')" id="nav-settings" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button id="nav-settings" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-gear w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">Settings</span>
                     </button>
@@ -1311,9 +1311,14 @@
             
             // Attach navigation button listeners
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const viewName = btn.id.replace('nav-', '');
+                btn.addEventListener('click', function() {
+                    const viewName = this.id.replace('nav-', '');
                     navigateTo(viewName);
+                    
+                    // Close the sidebar on mobile after navigation
+                    if (window.innerWidth <= 768) {
+                        toggleSidebar();
+                    }
                 });
             });
             
