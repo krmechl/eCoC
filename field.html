@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+<!-- Favicon --> <link rel="shortcut icon" href="ai.ico"> <link rel="icon" href="ai.ico"> 
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arcee CoC Tracker | Blockchain Edition</title>
+    <title>eCoC Tracker | AIBlockchain</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -167,137 +170,54 @@
             background-size: 16px;
             padding-right: 36px;
         }
-
-        /* Mobile Sidebar Toggle */
-        .mobile-sidebar-toggle {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 50;
-            background: linear-gradient(135deg, #6366f1, #00d4ff);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 56px;
-            height: 56px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
-            cursor: pointer;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-        }
-
-        .mobile-sidebar-toggle:active {
-            transform: scale(0.95);
-        }
-
-        .mobile-sidebar-toggle i {
-            font-size: 1.5rem;
-        }
-
-        /* Sidebar Transition */
-        .sidebar-transition {
-            transition: all 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .mobile-sidebar-toggle {
-                display: flex;
-            }
-            
-            .sidebar {
-                position: fixed;
-                top: 0;
-                left: 0;
-                height: 100vh;
-                width: 280px;
-                transform: translateX(-100%);
-                z-index: 50;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .sidebar-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0,0,0,0.5);
-                z-index: 45;
-                display: none;
-            }
-            
-            .sidebar-overlay.active {
-                display: block;
-            }
-            
-            .main-content {
-                margin-left: 0 !important;
-            }
-        }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Mobile Sidebar Toggle Button -->
-    <button id="mobile-sidebar-toggle" class="mobile-sidebar-toggle" aria-label="Toggle sidebar">
-        <i class="fa-solid fa-bars"></i>
-    </button>
-
-    <!-- Sidebar Overlay for mobile -->
-    <div id="sidebar-overlay" class="sidebar-overlay"></div>
-
     <!-- Navigation Bar -->
     <nav class="bg-cyber-dark text-white shadow-md sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm.px-6 lg:px-8">
-            <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
-                    <span class="text-xl font-bold tracking-tight">Arcee <span class="text-cyber-blue">CoC</span></span>
-                </div>
-                <div class="flex items-center">
-                    <div class="mr-4 text-right hidden sm:block">
-                        <div class="user-name text-sm font-medium">Mark D.</div>
-                        <div class="user-role text-xs text-gray-400">Field Agent</div>
-                    </div>
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyber-blue to-blue-600 flex items-center justify-center text-white font-bold shadow-lg">
-                        MD
-                    </div>
-                </div>
-            </div>
+          <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-white-600 text-white flex items-center justify-center">   <img src="ai.png" alt="BlockchainAI"  class="animate-[spin_1s_ease-in-out_5_forwards] h-10 w-10" ></div>
+
+        <div>
+          <div class="flex items-center gap-2 text-lg font-bold">
+            <span class="gradient-text">eCoC</span>
+            <span class="text-gray-400">—</span>
+            <img src="logo4.png?text=BlockchainAI" alt="BlockchainAI" class="h-8">
+          </div>
+          <div class="text-xs text-gray-500">BlockchainAI Chain of Custody</div>
         </div>
+      </div>
     </nav>
 
     <!-- Main Layout -->
     <div class="flex">
         
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar w-64 bg-white shadow-md z-30 md:block sidebar-transition">
+        <aside class="w-64 bg-white shadow-md z-30 hidden md:block">
             <div class="p-6">
                 <div class="flex items-center mb-6">
                     <i class="fa-solid fa-shipping-fast text-2xl text-cyber-blue mr-3"></i>
-                    <span class="text-lg font-bold">KRM CoC</span>
+                    <span class="text-lg font-bold">Field Tech</span>
                 </div>
                 
                 <nav class="space-y-2">
-                    <button id="nav-dashboard" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-chart-pie w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">Dashboard</span>
                     </button>
-                    <button id="nav-field-jobs" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button onclick="navigateTo('field-jobs')" id="nav-field-jobs" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-clipboard-list w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">Field Jobs</span>
                     </button>
-                    <button id="nav-ledgers" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button onclick="navigateTo('ledgers')" id="nav-ledgers" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-book-open w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">View Ledgers</span>
                     </button>
-                    <button id="nav-settings" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
+                    <button onclick="navigateTo('settings')" id="nav-settings" class="nav-btn w-full px-4 py-3 rounded-lg flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-cyber-blue transition group">
                         <i class="fa-solid fa-gear w-5 text-center group-hover:text-cyber-blue"></i>
                         <span class="font-medium">Settings</span>
                     </button>
@@ -306,7 +226,7 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main id="main-content" class="flex-1 p-6 md:p-8 bg-paper-gray min-h-screen main-content">
+        <main class="flex-1 p-6 md:p-8 bg-paper-gray min-h-screen">
             
             <!-- Dynamic Content Container -->
             <div id="app-content" class="max-w-6xl mx-auto">
@@ -362,17 +282,17 @@
                             </div>
                         </div>
                         
-                        <!-- GitHub Repository Files -->
+                        <!-- Github Repository Files -->
                         <div>
-                            <label class="block text-sm font-medium mb-2">GitHub Repository Files</label>
+                            <label class="block text-sm font-medium mb-2">Repository Files</label>
                             <div class="border-2 border-dashed border-green-500 rounded-lg p-4 text-center hover:bg-green-50 transition">
                                 <button id="load-github-pdf" class="w-full px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center gap-2">
                                     <i class="fa-brands fa-github text-lg text-green-600"></i>
-                                    <span>Load from GitHub</span>
+                                    <span>Load from Repository</span>
                                 </button>
                                 <div id="github-file-list" class="hidden mt-4">
                                     <select id="github-pdf-select" class="github-file-select w-full form-input rounded-lg px-3 py-2 mt-2">
-                                        <option value="">Loading files from GitHub...</option>
+                                        <option value="">Loading files from Repository...</option>
                                     </select>
                                     <div class="flex items-center justify-between mt-2">
                                         <p class="text-xs text-gray-500">Select a PDF from the repository</p>
@@ -410,7 +330,7 @@
                         </div>
                         
                         <div>
-                            <label class="block text-sm font-medium mb-2">GPS Location</label>
+                            <label class="block text-sm font-medium mb-2">Location [assumes device has GPS]</label>
                             <div class="flex items-center gap-2">
                                 <input type="text" id="coc-gps" readonly class="w-full form-input rounded-lg px-3 py-2 bg-gray-100" value="40.4406° N, 79.9959° W">
                                 <button id="refresh-gps" class="px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 text-gray-600" title="Refresh GPS">
@@ -685,7 +605,7 @@
                 <div class="space-y-8">
                     <!-- Header -->
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+                        <h1 class="text-3xl font-bold text-gray-900">Field Tech Dashboard</h1>
                         <p class="text-gray-600 mt-2">Real-time overview of your chain of custody operations.</p>
                     </div>
                     
@@ -957,7 +877,7 @@
                 }
 
                 // If we get here, we need to fetch fresh data
-                showToast('Fetching fresh PDF list from GitHub...', 'info');
+                showToast('Fetching fresh PDF list from Repository...', 'info');
 
                 const response = await fetch(`${GITHUB_API_URL}${GITHUB_REPO}/contents`, {
                     headers: {
@@ -983,8 +903,8 @@
 
                 populateGitHubDropdown(pdfs);
             } catch (error) {
-                console.error('Error fetching GitHub files:', error);
-                showToast('Failed to fetch PDF list from GitHub. Please try again.', 'error');
+                console.error('Error fetching Repository files:', error);
+                showToast('Failed to fetch PDF list from Repository. Please try again.', 'error');
             }
         }
 
@@ -993,7 +913,7 @@
             localStorage.removeItem(GITHUB_CACHE_KEY);
             // Show loading state
             const select = document.getElementById('github-pdf-select');
-            select.innerHTML = '<option value="">Refreshing files from GitHub...</option>';
+            select.innerHTML = '<option value="">Refreshing files from Repository...</option>';
             // Fetch fresh data
             fetchGitHubPDFs();
             showToast('GitHub file list refreshed!');
@@ -1033,7 +953,7 @@
 
                 const blob = await response.blob();
                 renderPDF(blob);
-                showToast('PDF loaded from GitHub!');
+                showToast('PDF loaded from Repository!');
             } catch (error) {
                 console.error('Error loading PDF from GitHub:', error);
                 showToast('Failed to load PDF from GitHub. Please try again.', 'error');
@@ -1140,7 +1060,7 @@
                 month: 'short', 
                 day: 'numeric', 
                 year: 'numeric',
-                hour: '2-digit', 
+                hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
                 hour12: false
@@ -1282,46 +1202,18 @@
         }
 
         // ==========================================
-        // SIDEBAR TOGGLE FUNCTIONS
-        // ==========================================
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const isClosed = sidebar.classList.contains('active');
-            
-            if (isClosed) {
-                // Close the sidebar
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            } else {
-                // Open the sidebar
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        }
-
-        // ==========================================
         // INITIALIZATION
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             // Set initial timestamp
             refreshTimestamp();
             
-            // Attach navigation button listeners using event delegation
-            // We attach a single listener to the main content area that handles clicks on any .nav-btn
-            document.getElementById('main-content').addEventListener('click', function(e) {
-                const navBtn = e.target.closest('.nav-btn');
-                if (navBtn) {
-                    const viewName = navBtn.id.replace('nav-', '');
+            // Attach navigation button listeners
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const viewName = btn.id.replace('nav-', '');
                     navigateTo(viewName);
-                    
-                    // Close the sidebar on mobile after navigation
-                    if (window.innerWidth <= 768) {
-                        toggleSidebar();
-                    }
-                }
+                });
             });
             
             // Attach modal close buttons
@@ -1353,10 +1245,6 @@
             // Refresh button
             document.getElementById('refresh-github-list')?.addEventListener('click', refreshGitHubPDFs);
             
-            // Sidebar toggle
-            document.getElementById('mobile-sidebar-toggle')?.addEventListener('click', toggleSidebar);
-            document.getElementById('sidebar-overlay')?.addEventListener('click', toggleSidebar);
-            
             // Navigate to dashboard by default
             navigateTo('dashboard');
             
@@ -1381,5 +1269,8 @@
         });
 
     </script>
+<script src='https://cdn.jotfor.ms/agent/embedjs/01951f582bfb7a24b0d5b2fac3a25333bbac/embed.js'>
+</script>
+
 </body>
 </html>
