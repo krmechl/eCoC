@@ -105,10 +105,24 @@
         }
 
         /* PDF Viewer Styles */
-        #pdf-render-canvas {
+        .pdf-viewer-container {
+            overflow-y: auto;
+            max-height: 60vh;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            background: white;
+            padding: 1rem;
+        }
+
+        .pdf-page {
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .pdf-page canvas {
+            display: block;
             max-width: 100%;
             height: auto;
         }
@@ -243,7 +257,9 @@
                             <p class="text-sm text-gray-500 mt-2">Simulated scan of paper CoC</p>
                         </div>
                         <div id="pdf-render-container" class="hidden w-full h-auto flex justify-center">
-                            <canvas id="pdf-render-canvas"></canvas>
+                            <div class="pdf-viewer-container" id="pdf-viewer">
+                                <!-- PDF pages will be rendered here -->
+                            </div>
                         </div>
                         <div id="pdf-loading" class="hidden flex justify-center items-center mt-4">
                             <div class="spinner"></div>
@@ -277,7 +293,12 @@
                                     <select id="github-pdf-select" class="github-file-select w-full form-input rounded-lg px-3 py-2 mt-2">
                                         <option value="">Loading files from GitHub...</option>
                                     </select>
-                                    <p class="text-xs text-gray-500 mt-2 text-center">Select a PDF file from the repository</p>
+                                    <div class="flex items-center justify-between mt-2">
+                                        <p class="text-xs text-gray-500">Select a PDF from the repository</p>
+                                        <button id="refresh-github-list" class="text-xs text-green-600 hover:text-green-800 flex items-center gap-1">
+                                            <i class="fa-solid fa-rotate-right"></i> Refresh List
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -842,15 +863,20 @@
         // ==========================================
         async function fetchGitHubPDFs() {
             try {
-                // Check cache first
+                // Check if we have a cached version and if it's less than 1 hour old
                 const cached = localStorage.getItem(GITHUB_CACHE_KEY);
                 if (cached) {
-                    const pdfs = JSON.parse(cached);
-                    populateGitHubDropdown(pdfs);
-                    return;
+                    const data = JSON.parse(cached);
+                    const age = Date.now() - data.timestamp;
+                    // If cache is less than 1 hour old, use it
+                    if (age < 3600000) {
+                        populateGitHubDropdown(data.pdfs);
+                        return;
+                    }
                 }
 
-                showToast('Fetching PDF list from GitHub...', 'info');
+                // If we get here, we need to fetch fresh data
+                showToast('Fetching fresh PDF list from GitHub...', 'info');
 
                 const response = await fetch(`${GITHUB_API_URL}${GITHUB_REPO}/contents`, {
                     headers: {
@@ -879,6 +905,17 @@
                 console.error('Error fetching GitHub files:', error);
                 showToast('Failed to fetch PDF list from GitHub. Please try again.', 'error');
             }
+        }
+
+        function refreshGitHubPDFs() {
+            // Clear the cache
+            localStorage.removeItem(GITHUB_CACHE_KEY);
+            // Show loading state
+            const select = document.getElementById('github-pdf-select');
+            select.innerHTML = '<option value="">Refreshing files from GitHub...</option>';
+            // Fetch fresh data
+            fetchGitHubPDFs();
+            showToast('GitHub file list refreshed!');
         }
 
         function populateGitHubDropdown(pdfs) {
@@ -975,28 +1012,37 @@
                     const loadingTask = pdfjsLib.getDocument(typedarray);
                     const pdf = await loadingTask.promise;
                     
-                    // Render first page
-                    const page = await pdf.getPage(1);
-                    const viewport = page.getViewport({ scale: 1.5 }); // Scale for better visibility
+                    // Clear any existing pages
+                    const viewer = document.getElementById('pdf-viewer');
+                    viewer.innerHTML = '';
                     
-                    const canvas = document.getElementById('pdf-render-canvas');
-                    const context = canvas.getContext('2d');
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
+                    // Render all pages
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        const page = await pdf.getPage(pageNum);
+                        const viewport = page.getViewport({ scale: 1.5 });
+                        
+                        const canvas = document.createElement('canvas');
+                        canvas.id = `pdf-page-${pageNum}`;
+                        canvas.className = 'pdf-page';
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        
+                        const context = canvas.getContext('2d');
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        
+                        await page.render(renderContext).promise;
+                        viewer.appendChild(canvas);
+                    }
                     
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: viewport
-                    };
-                    
-                    await page.render(renderContext).promise;
-                    
-                    // Show canvas, hide placeholder and loading
+                    // Show the viewer, hide placeholder and loading
                     document.getElementById('pdf-placeholder').classList.add('hidden');
                     document.getElementById('pdf-render-container').classList.remove('hidden');
                     document.getElementById('pdf-loading').classList.add('hidden');
                     
-                    showToast('PDF rendered successfully!');
+                    showToast(`PDF rendered successfully! (${pdf.numPages} pages)`);
                 } catch (error) {
                     console.error('Error rendering PDF:', error);
                     showToast('Error rendering PDF. Please try a different file.', 'error');
@@ -1028,7 +1074,10 @@
                 '37.7749° N, 122.4194° W',  // San Francisco
                 '51.5074° N, 0.1278° W',    // London
                 '48.8566° N, 2.3522° E',    // Paris
-                '35.6895° N, 139.6917° E'   // Tokyo
+                '35.6895° N, 139.6917° E',  // Tokyo
+                '34.0522° N, 118.2437° W',  // Los Angeles
+                '40.7128° N, 74.0060° W',   // New York
+                '51.5074° N, 0.1278° W'     // London
             ];
             
             const randomLocation = locations[Math.floor(Math.random() * locations.length)];
@@ -1191,6 +1240,9 @@
                     loadPDFFromGitHub(this.value);
                 }
             });
+            
+            // Refresh button
+            document.getElementById('refresh-github-list')?.addEventListener('click', refreshGitHubPDFs);
             
             // Navigate to dashboard by default
             navigateTo('dashboard');
