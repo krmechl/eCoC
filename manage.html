@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ <!-- Favicon --> <link rel="shortcut icon" href="ai.ico"> <link rel="icon" href="ai.ico"> 
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eCoC BlockchainAI Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .modal { display: none; }
+    .modal.open { display: flex; }
+    .modal-backdrop { background: rgba(0,0,0,.5); }
+    .card-hover { transition: transform .15s ease, box-shadow .15s ease; }
+    .card-hover:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    .fade-in { animation: fadeIn .18s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .pill { display:inline-flex; align-items:center; padding:.25rem .6rem; border-radius:9999px; font-size:.75rem; font-weight:600; }
+  </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-900">
+  <header class="bg-white shadow-sm sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-lg bg-white-600 text-white flex items-center justify-center">   <img src="ai.png" alt="Cube Icon" class="h-8 w-auto object-contain"></div>
+        <div>
+        <div class="flex items-center gap-2 text-lg font-bold">
+  <span>eCoC</span>
+  <img src="logo2.png"  alt="SocialAI" class="h-8 w-auto">
+</div>
+<div class="text-xs text-gray-500">BlockchainAI Chain of Custody</div>
+
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="text-sm text-gray-600">Balance: <span id="wallet-balance">0.00</span></div>
+        <button id="connect-btn" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Connect Wallet</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <aside class="space-y-6 lg:col-span-1">
+      <section class="bg-white rounded-xl shadow p-5 card-hover">
+        <h2 class="font-semibold mb-3 flex items-center gap-2"><i class="fa-solid fa-layer-group text-blue-600"></i>Select Module</h2>
+        <div class="space-y-2">
+          <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-blue-50 hover:bg-blue-100" data-module="supply-chain">eCoC Chain</button>
+          <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100" data-module="payments">Blockchain Payments</button>
+          <button class="module-btn w-full text-left px-4 py-3 rounded-lg bg-gray-50 hover:bg-gray-100" data-module="loyalty">Loyalty Points</button>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-xl shadow p-5 card-hover">
+        <h2 class="font-semibold mb-3 flex items-center gap-2"><i class="fa-solid fa-chart-line text-blue-600"></i>Quick Stats</h2>
+        <div class="grid grid-cols-1 gap-4 text-sm">
+          <div><div class="text-gray-500 text-xs">Total Contracts</div><div id="total-contracts" class="text-2xl font-bold">0</div></div>
+          <div><div class="text-gray-500 text-xs">Active Contracts</div><div id="active-contracts" class="text-2xl font-bold">0</div></div>
+          <div><div class="text-gray-500 text-xs">Total Value Locked</div><div id="total-value" class="text-2xl font-bold">0.00</div></div>
+        </div>
+      </section>
+    </aside>
+
+    <section class="lg:col-span-3 space-y-6">
+      <div id="welcome-screen" class="bg-white rounded-xl shadow p-8 fade-in">
+        <h1 class="text-3xl font-bold mb-3">Welcome to eCoC</h1>
+        <p class="text-gray-600 max-w-2xl">A Chain of Custody solution for environmental testing labs using blockchain for trust and accountability, with AI to parse and guarantee contract performance.</p>
+      </div>
+
+      <div id="supply-chain-module" class="hidden bg-white rounded-xl shadow p-6">
+        <div class="flex items-center justify-between gap-3 mb-5">
+          <div>
+            <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fa-solid fa-truck text-blue-600"></i>eCoC Chain Module</h2>
+            <p class="text-gray-600 mt-1">Create and track CoC via blockchain.</p>
+          </div>
+          <button id="new-analysis-job-btn" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700"><i class="fa-solid fa-folder-plus mr-2"></i>New Analysis / Job</button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Customer</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Owner</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Location</th>
+                <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500 uppercase">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="product-table-body" class="bg-white"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="payments-module" class="hidden bg-white rounded-xl shadow p-6">
+        <h2 class="text-2xl font-bold flex items-center gap-2 mb-4"><i class="fa-solid fa-network-wired text-blue-600"></i>Blockchain Payments Activity</h2>
+        <div id="tx-list" class="space-y-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="analysis-job-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-2xl font-bold">New Analysis / Job</h3>
+          <p class="text-gray-600 mt-1">Select an existing customer or create a new customer profile, then provision a ledger and contract.</p>
+        </div>
+        <button type="button" id="close-analysis-job-btn" class="text-gray-500 hover:text-gray-800 text-xl">&times;</button>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button type="button" id="use-existing-customer-btn" class="border rounded-xl p-5 text-left hover:border-blue-500 bg-gray-50">
+            <div class="font-semibold text-lg mb-1">Use Existing Customer</div>
+            <div class="text-sm text-gray-600">Start a new job under an existing customer profile.</div>
+          </button>
+          <button type="button" id="create-new-customer-btn" class="border rounded-xl p-5 text-left hover:border-blue-500 bg-gray-50">
+            <div class="font-semibold text-lg mb-1">Create New Customer</div>
+            <div class="text-sm text-gray-600">Add a new customer profile, then create a new ledger and contract.</div>
+          </button>
+        </div>
+
+        <div id="customer-section" class="space-y-4 hidden">
+          <h4 class="font-semibold text-lg">Customer</h4>
+
+          <div id="existing-customer-panel" class="space-y-4 hidden">
+            <label class="block text-sm font-medium">Select Existing Customer</label>
+            <select id="existing-customer-select" class="w-full border rounded-lg px-3 py-2"></select>
+          </div>
+
+          <div id="new-customer-panel" class="space-y-4 hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Customer Name</label>
+                <input id="customer-name" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="e.g., GreenGrid Environmental Engineering">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Customer ID</label>
+                <input id="customer-id" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Auto-generated if blank">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium mb-1">Contact Name</label>
+                <input id="customer-contact" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Primary contact">
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input id="customer-email" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="name@company.com">
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Notes</label>
+              <textarea id="customer-notes" class="w-full border rounded-lg px-3 py-2" rows="2" placeholder="Optional customer notes"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div id="ledger-section" class="space-y-4 hidden">
+          <h4 class="font-semibold text-lg">Ledger / Chain</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Ledger Name</label>
+              <input id="ledger-name" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="e.g., eCoC Lab Ledger">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Environment</label>
+              <select id="ledger-env" class="w-full border rounded-lg px-3 py-2">
+                <option value="testnet">Testnet</option>
+                <option value="private">Private / Permissioned</option>
+                <option value="sandbox">Sandbox</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-1">Chain ID</label>
+              <input id="ledger-chain-id" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="Auto-generated if blank">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-1">Ledger Status</label>
+              <input id="ledger-status" type="text" class="w-full border rounded-lg px-3 py-2" value="active" readonly>
+            </div>
+          </div>
+        </div>
+
+      <div id="contract-section" class="space-y-4 hidden">
+  <h4 class="font-semibold text-lg">Smart Contract</h4>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Contract Name
+      </label>
+      <input
+        id="job-contract-name"
+        type="text"
+        class="w-full border rounded-lg px-3 py-2"
+        placeholder="e.g., CoC Workflow Agreement"
+        required
+      >
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Contract Type
+      </label>
+      <select
+        id="job-contract-type"
+        class="w-full border rounded-lg px-3 py-2"
+        required
+      >
+        <option value="coc">Chain of Custody</option>
+        <option value="analysis">Analysis Job</option>
+        <option value="service">Service Agreement</option>
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">
+      Description
+    </label>
+    <textarea
+      id="job-contract-desc"
+      class="w-full border rounded-lg px-3 py-2"
+      rows="3"
+      placeholder="Describe the job or chain-of-custody workflow"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Total Contract Value
+      </label>
+      <input
+        id="job-contract-value"
+        type="number"
+        min="0"
+        step="0.01"
+        class="w-full border rounded-lg px-3 py-2"
+        placeholder="0.00"
+        required
+      >
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Currency
+      </label>
+      <select
+        id="job-contract-currency"
+        class="w-full border rounded-lg px-3 py-2"
+        required
+      >
+        <option value="USD">USD</option>
+        <option value="USDC">USDC</option>
+        <option value="ETH">ETH</option>
+        <option value="MATIC">MATIC</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Payment Release Condition
+      </label>
+      <select
+        id="job-release-condition"
+        class="w-full border rounded-lg px-3 py-2"
+        required
+      >
+        <option value="auto">
+          Automatic on milestone completion
+        </option>
+        <option value="manual">
+          Manual release by client
+        </option>
+        <option value="time">
+          Time-based release
+        </option>
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Refund Policy
+      </label>
+      <select
+        id="job-refund-policy"
+        class="w-full border rounded-lg px-3 py-2"
+        required
+      >
+        <option value="full">
+          Full refund if milestones not met
+        </option>
+        <option value="partial">
+          Partial refund based on work completed
+        </option>
+        <option value="none">
+          No refunds
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Remittance Address
+      </label>
+      <input
+        id="job-remittance-address"
+        type="text"
+        class="w-full border rounded-lg px-3 py-2"
+        placeholder="0x..."
+        required
+      >
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Escrow Wallet Address
+      </label>
+      <input
+        id="job-escrow-address"
+        type="text"
+        class="w-full border rounded-lg px-3 py-2"
+        placeholder="0x..."
+        required
+      >
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        Start Date
+      </label>
+      <input
+        id="job-start-date"
+        type="date"
+        class="w-full border rounded-lg px-3 py-2"
+        required
+      >
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">
+        End Date
+      </label>
+      <input
+        id="job-end-date"
+        type="date"
+        class="w-full border rounded-lg px-3 py-2"
+        required
+      >
+    </div>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="block text-sm font-medium">
+        Payment Milestones
+      </label>
+
+      <div class="flex gap-2">
+        <button
+          type="button"
+          id="job-add-milestone-btn"
+          class="px-3 py-1 rounded bg-blue-600 text-white text-sm"
+        >
+          Add
+        </button>
+
+        <button
+          type="button"
+          id="job-remove-milestone-btn"
+          class="px-3 py-1 rounded bg-gray-600 text-white text-sm"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <div id="job-milestones-container" class="space-y-3"></div>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">
+      Grace Period (days)
+    </label>
+    <input
+      id="job-grace-period"
+      type="number"
+      min="0"
+      value="7"
+      class="w-full border rounded-lg px-3 py-2"
+    >
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">
+      Quality Assurance Requirements
+    </label>
+    <textarea
+      id="job-qa-requirements"
+      class="w-full border rounded-lg px-3 py-2"
+      rows="2"
+      placeholder="Describe inspection, testing, or acceptance requirements"
+    ></textarea>
+  </div>
+
+  <div>
+    <label class="block text-sm font-medium mb-1">
+      Delivery Requirements
+    </label>
+    <textarea
+      id="job-delivery-requirements"
+      class="w-full border rounded-lg px-3 py-2"
+      rows="2"
+      placeholder="Describe required deliverables and delivery conditions"
+    ></textarea>
+  </div>
+</div>
+
+        <div class="flex items-center justify-between pt-4 border-t">
+          <button type="button" id="cancel-analysis-job-btn" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
+          <div class="flex items-center gap-2">
+            <button type="button" id="create-ledger-btn" class="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-700 hidden">Create New Ledger</button>
+            <button type="button" id="create-job-contract-btn" class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 hidden">Create Smart Contract</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="history-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b flex items-center justify-between gap-3">
+        <div>
+          <h3 class="text-2xl font-bold">Chain History</h3>
+          <p id="history-subtitle" class="text-gray-600 mt-1"></p>
+        </div>
+        <button type="button" id="close-history-btn" class="text-gray-500 hover:text-gray-800 text-xl">&times;</button>
+      </div>
+      <div class="p-6">
+        <div id="history-entries" class="space-y-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="create-contract-modal" class="modal fixed inset-0 z-50 items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b">
+        <h3 class="text-2xl font-bold">Create Smart Contract</h3>
+        <p class="text-gray-600 mt-1">Define the terms of your blockchain-based agreement.</p>
+      </div>
+      <form id="contract-form" class="p-6 space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Contract Name</label>
+            <input id="contract-name" type="text" class="w-full border rounded-lg px-3 py-2" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Contract Type</label>
+            <select id="contract-type" class="w-full border rounded-lg px-3 py-2" required>
+              <option value="">Select a contract type</option>
+              <option value="freelance">Analytics Services</option>
+              <option value="service">Service Agreement</option>
+              <option value="product">Product Purchase</option>
+              <option value="custom">Custom Agreement</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Description</label>
+          <textarea id="contract-desc" class="w-full border rounded-lg px-3 py-2" rows="3" required></textarea>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Total Contract Value</label>
+            <input id="total-value" type="number" step="0.01" class="w-full border rounded-lg px-3 py-2" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Currency</label>
+            <select id="currency" class="w-full border rounded-lg px-3 py-2" required>
+              <option>USD</option><option>USDC</option><option>ETH</option><option>MATIC</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Payment Release Condition</label>
+            <select id="release-condition" class="w-full border rounded-lg px-3 py-2" required>
+              <option value="auto">Automatic on milestone completion</option>
+              <option value="manual">Manual release by client</option>
+              <option value="time">Time-based release</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Refund Policy</label>
+            <select id="refund-policy" class="w-full border rounded-lg px-3 py-2">
+              <option value="full">Full refund if milestones not met</option>
+              <option value="partial">Partial refund based on work completed</option>
+              <option value="none">No refunds</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Remittance Address</label>
+            <input id="remittance-address" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="0x..." required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">Escrow Wallet Address</label>
+            <input id="escrow-address" type="text" class="w-full border rounded-lg px-3 py-2" placeholder="0x..." required>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Start Date</label>
+            <input id="start-date" type="date" class="w-full border rounded-lg px-3 py-2" required>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1">End Date</label>
+            <input id="end-date" type="date" class="w-full border rounded-lg px-3 py-2" required>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-medium">Payment Milestones</label>
+            <div class="flex gap-2">
+              <button type="button" id="add-milestone-btn" class="px-3 py-1 rounded bg-blue-600 text-white text-sm">Add</button>
+              <button type="button" id="remove-milestone-btn" class="px-3 py-1 rounded bg-gray-600 text-white text-sm">Remove</button>
+            </div>
+          </div>
+          <div id="milestones-container" class="space-y-3"></div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Grace Period (days)</label>
+          <input id="grace-period" type="number" min="0" value="7" class="w-full border rounded-lg px-3 py-2">
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Quality Assurance Requirements</label>
+          <textarea id="qa-requirements" class="w-full border rounded-lg px-3 py-2" rows="2"></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1">Delivery Requirements</label>
+          <textarea id="delivery-requirements" class="w-full border rounded-lg px-3 py-2" rows="2"></textarea>
+        </div>
+        <div class="flex items-center justify-between pt-4 border-t">
+          <button type="button" id="cancel-contract-btn" class="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Create Contract</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const state = {
+      connected: false,
+      walletAddress: null,
+      balance: 0,
+      selectedModule: null,
+      contracts: [],
+      products: [],
+      transactions: [],
+      customers: [],
+      ledgers: []
+    };
+
+    function qs(id) { return document.getElementById(id); }
+    function uid(prefix) { return `${prefix}_${Math.random().toString(16).slice(2, 10)}`; }
+    function randomHex(len = 40) { const chars = '0123456789abcdef'; let out = '0x'; for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * 16)]; return out; }
+    function setDefaultDates() { const today = new Date(); qs('start-date').value = today.toISOString().slice(0, 10); const end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); qs('end-date').value = end.toISOString().slice(0, 10); }
+    function openModal(id) { const modal = qs(id); modal.classList.remove('hidden'); modal.classList.add('open'); }
+    function closeModal(id) { const modal = qs(id); modal.classList.remove('open'); modal.classList.add('hidden'); }
+
+    function loadCustomerOptions() {
+      const select = qs('existing-customer-select');
+      if (!select) return;
+      select.innerHTML = state.customers.length
+        ? state.customers.map(c => `<option value="${c.id}">${c.name} (${c.id})</option>`).join('')
+        : '<option value="">No customers available</option>';
+    }
+
+    function updateStats() {
+      qs('total-contracts').textContent = state.contracts.length;
+      qs('active-contracts').textContent = state.contracts.filter(c => c.status === 'active').length;
+      const total = state.contracts.reduce((sum, c) => sum + (Number(c.totalValue) || 0), 0);
+      qs('total-value').textContent = total.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function updateWalletUI() {
+      qs('wallet-balance').textContent = state.connected ? state.balance.toFixed(2) : '0.00';
+      qs('connect-btn').textContent = state.connected ? `${state.walletAddress.slice(0, 8)}...` : 'Connect Wallet';
+    }
+
+    function renderProducts() {
+      const tbody = qs('product-table-body');
+      tbody.innerHTML = '';
+      if (!state.products.length) {
+        tbody.innerHTML = '<tr><td class="px-4 py-4 text-gray-500" colspan="5">No customers yet.</td></tr>';
+        return;
+      }
+      state.products.forEach((p, index) => {
+        const tr = document.createElement('tr');
+        tr.className = 'border-t cursor-pointer';
+        tr.innerHTML = `
+          <td class="px-4 py-3"><div class="font-medium">${p.name}</div><div class="text-xs text-gray-500">${p.id}</div></td>
+          <td class="px-4 py-3"><span class="pill bg-green-100 text-green-800">${p.status}</span></td>
+          <td class="px-4 py-3 text-sm text-gray-700">${p.currentOwner}</td>
+          <td class="px-4 py-3 text-sm text-gray-700">${p.location}</td>
+          <td class="px-4 py-3"><button type="button" class="text-blue-600 hover:underline text-sm" onclick="showProductHistory(${index})">View History</button></td>
+        `;
+        tr.addEventListener('click', e => { if (!e.target.closest('button')) showProductHistory(index); });
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderTransactions() {
+      const list = qs('tx-list');
+      list.innerHTML = '';
+      if (!state.transactions.length) {
+        list.innerHTML = '<div class="text-gray-500">No activity yet.</div>';
+        return;
+      }
+      state.transactions.slice(0, 5).forEach(tx => {
+        const div = document.createElement('div');
+        div.className = 'border rounded-lg p-4 bg-gray-50';
+        div.innerHTML = `<div class="flex justify-between items-center mb-1"><div class="text-sm font-semibold uppercase">${tx.type}</div><div class="text-xs text-gray-500">${new Date(tx.time).toLocaleTimeString()}</div></div><div class="text-sm font-mono truncate">${tx.hash}</div><div class="text-xs text-gray-600 mt-1">Status: ${tx.status} ${tx.amount ? `| Amount: ${tx.amount}` : ''}</div>`;
+        list.appendChild(div);
+      });
+    }
+
+function showProductHistory(index) {
+  const p = state.products[index];
+  if (!p || !Array.isArray(p.txs)) return;
+
+  qs('history-subtitle').textContent = `${p.name} • ${p.id} • ${p.location}`;
+  const container = qs('history-entries');
+  container.innerHTML = '';
+
+  p.txs.forEach((e, i) => {
+    const d = document.createElement('div');
+    d.className = 'border border-slate-200 rounded-2xl p-4 bg-slate-50 shadow-sm';
+
+    const timestamp = e.timestamp || new Date(Date.now() - i * 3600000).toLocaleString();
+    const status = e.status || 'confirmed';
+    const blockNo = e.blockNo || (10400000 + index * 10 + i + 1);
+    const statusClass =
+      status === 'confirmed'
+        ? 'bg-emerald-100 text-emerald-800'
+        : status === 'pending'
+        ? 'bg-amber-100 text-amber-800'
+        : 'bg-slate-100 text-slate-800';
+
+    d.innerHTML = `
+      <div class="flex items-start justify-between gap-3 flex-wrap mb-3">
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="w-8 h-8 rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">${i + 1}</div>
+          <div class="px-2 py-1 rounded-full text-xs font-semibold bg-indigo-100 text-indigo-800">Block #${blockNo}</div>
+          <div>
+            <div class="font-semibold text-sm text-slate-900">${e.title}</div>
+            <div class="text-xs text-slate-500 mt-1">${timestamp}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="px-2 py-1 rounded-full text-xs font-semibold ${statusClass}">${status}</span>
+          <span class="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">Hash</span>
+        </div>
+      </div>
+
+      <div class="font-mono text-xs break-all bg-slate-900 text-slate-100 rounded-xl px-3 py-3 flex items-start justify-between gap-3">
+        <span class="leading-5 flex-1">${e.hash || ''}</span>
+        <button type="button" class="shrink-0 text-xs px-2 py-1 rounded bg-slate-700 hover:bg-slate-600 text-white" data-hash="${e.hash || ''}">Copy</button>
+      </div>
+
+      <div class="mt-3 text-sm text-slate-700 leading-6">${e.text}</div>
+    `;
+
+    d.addEventListener('click', ev => {
+      ev.stopPropagation();
+    });
+
+    const copyBtn = d.querySelector('button[data-hash]');
+    copyBtn?.addEventListener('click', async ev => {
+      ev.preventDefault();
+      ev.stopPropagation();
+
+      const hash = ev.currentTarget.getAttribute('data-hash') || '';
+      if (!hash) return;
+
+      const btn = ev.currentTarget;
+      const original = btn.textContent;
+      btn.textContent = 'Copied!';
+      btn.disabled = true;
+
+      try {
+        await navigator.clipboard.writeText(hash);
+      } catch (_) {}
+
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.disabled = false;
+      }, 1200);
+    });
+
+    container.appendChild(d);
+  });
+
+  openModal('history-modal');
+}
+    let copiedToastTimer = null;
+    function showCopiedToast() {
+      let toast = qs('copied-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'copied-toast';
+        toast.className = 'absolute top-4 left-1/2 -translate-x-1/2 z-[60] px-4 py-2 rounded-full bg-slate-900 text-white text-sm shadow-lg opacity-0 pointer-events-none transition-opacity';
+        toast.textContent = 'Copied';
+        const modal = qs('history-modal');
+        modal.style.position = 'relative';
+        modal.appendChild(toast);
+      }
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      clearTimeout(copiedToastTimer);
+      copiedToastTimer = setTimeout(() => {
+        toast.classList.add('opacity-0');
+        toast.classList.remove('opacity-100');
+      }, 1200);
+    }
+
+    function createExistingOrNewCustomer() {
+      return document.getElementById('existing-customer-panel').classList.contains('hidden') ? 'new' : 'existing';
+    }
+
+ function showExistingCustomerFlow() {
+  qs("customer-section")
+    .classList.remove("hidden");
+
+  qs("existing-customer-panel")
+    .classList.remove("hidden");
+
+  qs("new-customer-panel")
+    .classList.add("hidden");
+
+  qs("ledger-section")
+    .classList.remove("hidden");
+
+  qs("contract-section")
+    .classList.remove("hidden");
+
+  qs("create-ledger-btn")
+    .classList.remove("hidden");
+
+  qs("create-job-contract-btn")
+    .classList.remove("hidden");
+
+  loadCustomerOptions();
+  initializeJobContractForm();
+}
+
+function showNewCustomerFlow() {
+  qs("customer-section")
+    .classList.remove("hidden");
+
+  qs("existing-customer-panel")
+    .classList.add("hidden");
+
+  qs("new-customer-panel")
+    .classList.remove("hidden");
+
+  qs("ledger-section")
+    .classList.remove("hidden");
+
+  qs("contract-section")
+    .classList.remove("hidden");
+
+  qs("create-ledger-btn")
+    .classList.remove("hidden");
+
+  qs("create-job-contract-btn")
+    .classList.remove("hidden");
+
+  initializeJobContractForm();
+}
+
+
+    function createNewLedger() {
+      const mode = createExistingOrNewCustomer();
+      let customer = null;
+      if (mode === 'existing') {
+        customer = state.customers.find(c => c.id === qs('existing-customer-select').value);
+        if (!customer) return alert('Select an existing customer first.');
+      } else {
+        const name = qs('customer-name').value.trim();
+        if (!name) return alert('Enter a customer name.');
+        customer = { id: qs('customer-id').value.trim() || uid('cust'), name, contact: qs('customer-contact').value.trim(), email: qs('customer-email').value.trim(), notes: qs('customer-notes').value.trim() };
+        state.customers.push(customer);
+        loadCustomerOptions();
+      }
+      const ledger = { id: uid('ledger'), customerId: customer.id, name: qs('ledger-name').value.trim() || `${customer.name} Ledger`, env: qs('ledger-env').value, chainId: qs('ledger-chain-id').value.trim() || uid('chain'), status: 'active', createdAt: new Date().toISOString() };
+      state.ledgers.push(ledger);
+      alert(`Ledger created for ${customer.name}: ${ledger.name}`);
+      return ledger;
+    }
+
+let jobMilestoneCount = 0;
+
+function addJobMilestone(values = {}) {
+  const container = qs("job-milestones-container");
+  if (!container) return;
+
+  jobMilestoneCount += 1;
+  const index = jobMilestoneCount;
+
+  const row = document.createElement("div");
+  row.className = "border rounded-lg p-4 bg-gray-50";
+  row.dataset.milestoneIndex = index;
+
+  row.innerHTML = `
+    <div class="flex items-center justify-between mb-3">
+      <div class="font-medium text-sm">
+        Milestone ${index}
+      </div>
+
+      <button
+        type="button"
+        class="job-remove-single-milestone text-red-600 text-xs"
+      >
+        Remove
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs font-medium mb-1">
+          Name
+        </label>
+        <input
+          type="text"
+          class="job-milestone-name w-full border rounded px-3 py-2"
+          value="${values.name || ""}"
+          required
+        >
+      </div>
+
+      <div>
+        <label class="block text-xs font-medium mb-1">
+          Amount (%)
+        </label>
+        <input
+          type="number"
+          min="0"
+          max="100"
+          step="0.01"
+          class="job-milestone-amount w-full border rounded px-3 py-2"
+          value="${values.amount ?? ""}"
+          required
+        >
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-xs font-medium mb-1">
+          Description
+        </label>
+        <textarea
+          class="job-milestone-description w-full border rounded px-3 py-2"
+          rows="2"
+        >${values.description || ""}</textarea>
+      </div>
+
+      <div class="md:col-span-2">
+        <label class="block text-xs font-medium mb-1">
+          Deadline
+        </label>
+        <input
+          type="date"
+          class="job-milestone-deadline w-full border rounded px-3 py-2"
+          value="${values.deadline || ""}"
+        >
+      </div>
+    </div>
+  `;
+
+  container.appendChild(row);
+}
+
+function removeLastJobMilestone() {
+  const container = qs("job-milestones-container");
+  if (!container) return;
+
+  const rows = container.querySelectorAll(
+    "[data-milestone-index]"
+  );
+
+  if (rows.length <= 1) {
+    alert("At least one milestone is required.");
+    return;
+  }
+
+  rows[rows.length - 1].remove();
+}
+
+function initializeJobContractForm() {
+  const container = qs("job-milestones-container");
+  if (!container) return;
+
+  if (!container.children.length) {
+    const today = new Date();
+    const endDate = new Date(
+      Date.now() + 30 * 24 * 60 * 60 * 1000
+    );
+
+    qs("job-start-date").value =
+      today.toISOString().slice(0, 10);
+
+    qs("job-end-date").value =
+      endDate.toISOString().slice(0, 10);
+
+    addJobMilestone({
+      name: "Milestone 1",
+      amount: 100,
+      deadline: endDate.toISOString().slice(0, 10)
+    });
+  }
+}   
+
+
+
+
+ function createJobContract() {
+  const mode = createExistingOrNewCustomer();
+  let customer = null;
+
+  if (mode === "existing") {
+    customer = state.customers.find(
+      c => c.id === qs("existing-customer-select").value
+    );
+  } else {
+    const customerId =
+      qs("customer-id").value.trim() ||
+      state.customers.at(-1)?.id;
+
+    customer = state.customers.find(
+      c => c.id === customerId
+    );
+  }
+
+  if (!customer) {
+    alert("Create or select a customer first.");
+    return;
+  }
+
+  const ledger = [...state.ledgers]
+    .reverse()
+    .find(l => l.customerId === customer.id);
+
+  if (!ledger) {
+    alert("Create a ledger first.");
+    return;
+  }
+
+  const rows = [
+    ...document.querySelectorAll(
+      "#job-milestones-container [data-milestone-index]"
+    )
+  ];
+
+  const milestones = rows.map((row, index) => ({
+    id: index + 1,
+    name: row
+      .querySelector(".job-milestone-name")
+      .value
+      .trim(),
+
+    amount: Number(
+      row.querySelector(".job-milestone-amount").value || 0
+    ),
+
+    description: row
+      .querySelector(".job-milestone-description")
+      .value
+      .trim(),
+
+    deadline: row
+      .querySelector(".job-milestone-deadline")
+      .value,
+
+    completed: false
+  }));
+
+  const milestoneTotal = milestones.reduce(
+    (sum, milestone) => sum + milestone.amount,
+    0
+  );
+
+  if (Math.round(milestoneTotal * 100) / 100 !== 100) {
+    alert(
+      `Milestone percentages must total 100%. ` +
+      `Current total: ${milestoneTotal}%`
+    );
+    return;
+  }
+
+  const contract = {
+    id: uid("contract"),
+    customerId: customer.id,
+    ledgerId: ledger.id,
+
+    name:
+      qs("job-contract-name").value.trim() ||
+      "New Analysis Job",
+
+    type: qs("job-contract-type").value,
+
+    description:
+      qs("job-contract-desc").value.trim(),
+
+    totalValue: Number(
+      qs("job-contract-value").value || 0
+    ),
+
+    currency: qs("job-contract-currency").value,
+
+    releaseCondition:
+      qs("job-release-condition").value,
+
+    refundPolicy:
+      qs("job-refund-policy").value,
+
+    remittanceAddress:
+      qs("job-remittance-address").value.trim(),
+
+    escrowAddress:
+      qs("job-escrow-address").value.trim(),
+
+    startDate:
+      qs("job-start-date").value,
+
+    endDate:
+      qs("job-end-date").value,
+
+    gracePeriod: Number(
+      qs("job-grace-period").value || 0
+    ),
+
+    qaRequirements:
+      qs("job-qa-requirements").value.trim(),
+
+    deliveryRequirements:
+      qs("job-delivery-requirements").value.trim(),
+
+    milestones,
+    status: "active",
+    createdAt: new Date().toISOString()
+  };
+
+  state.contracts.push(contract);
+
+  state.transactions.unshift({
+    hash: randomHex(64),
+    type: "contractdeploy",
+    amount: contract.totalValue,
+    status: "confirmed",
+    time: new Date().toISOString()
+  });
+
+  closeModal("analysis-job-modal");
+  updateStats();
+  renderTransactions();
+
+  alert(
+    `Smart contract created for ${customer.name} ` +
+    `on ${ledger.name}.`
+  );
+}
+
+    function addMilestoneRow(values = {}) {
+      const container = qs('milestones-container');
+      const idx = container.children.length + 1;
+      const row = document.createElement('div');
+      row.className = 'border rounded-lg p-4 bg-gray-50';
+      row.id = `milestone-${idx}`;
+      row.innerHTML = `
+        <div class="flex items-center justify-between mb-3">
+          <div class="font-medium text-sm">Milestone ${idx}</div>
+          <button type="button" class="text-red-600 text-xs" onclick="window.removeMilestone(${idx})">Remove</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div><label class="block text-xs font-medium mb-1">Name</label><input id="milestone-name-${idx}" class="w-full border rounded px-3 py-2" value="${values.name || ''}" required></div>
+          <div><label class="block text-xs font-medium mb-1">Amount (%)</label><input id="milestone-amount-${idx}" type="number" min="0" max="100" class="w-full border rounded px-3 py-2" value="${values.amount ?? ''}" required></div>
+          <div class="md:col-span-2"><label class="block text-xs font-medium mb-1">Description</label><textarea id="milestone-desc-${idx}" class="w-full border rounded px-3 py-2" rows="2">${values.description || ''}</textarea></div>
+          <div class="md:col-span-2"><label class="block text-xs font-medium mb-1">Deadline</label><input id="milestone-deadline-${idx}" type="date" class="w-full border rounded px-3 py-2" value="${values.deadline || ''}"></div>
+        </div>
+      `;
+      container.appendChild(row);
+    }
+
+    function removeMilestone(index) {
+      const container = qs('milestones-container');
+      if (container.children.length <= 1) return alert('At least one milestone is required.');
+      qs(`milestone-${index}`)?.remove();
+    }
+
+    function createContract() {
+      setDefaultDates();
+      qs('contract-form').reset();
+      qs('milestones-container').innerHTML = '';
+      addMilestoneRow({ amount: 100 });
+      openModal('create-contract-modal');
+    }
+
+    function applyTemplate(template) {
+      qs('contract-type').value = template;
+      if (template === 'freelance') {
+        qs('contract-name').value = 'Analytics Agreement';
+        qs('contract-desc').value = 'Milestone-based agreement for lab analytical work.';
+        qs('total-value').value = '5000';
+        qs('currency').value = 'USDC';
+        qs('release-condition').value = 'auto';
+        qs('refund-policy').value = 'partial';
+        qs('milestones-container').innerHTML = '';
+        addMilestoneRow({ name: 'Initial Deposit', amount: 20, description: 'Upfront deposit', deadline: qs('start-date').value });
+        addMilestoneRow({ name: 'First Draft', amount: 30, description: 'Draft delivery', deadline: qs('start-date').value });
+        addMilestoneRow({ name: 'Revisions', amount: 30, description: 'Revision round', deadline: qs('end-date').value });
+        addMilestoneRow({ name: 'Final Delivery', amount: 20, description: 'Final handoff', deadline: qs('end-date').value });
+      } else if (template === 'service') {
+        qs('contract-name').value = 'Service Contract';
+        qs('contract-desc').value = 'Agreement for completed service delivery.';
+        qs('total-value').value = '10000';
+        qs('currency').value = 'USD';
+        qs('release-condition').value = 'time';
+        qs('refund-policy').value = 'partial';
+        qs('milestones-container').innerHTML = '';
+        addMilestoneRow({ name: 'Project Kickoff', amount: 10, description: 'Begin work', deadline: qs('start-date').value });
+        addMilestoneRow({ name: 'Phase 1', amount: 25, description: 'Phase 1 delivery', deadline: qs('end-date').value });
+        addMilestoneRow({ name: 'Phase 2', amount: 25, description: 'Phase 2 delivery', deadline: qs('end-date').value });
+        addMilestoneRow({ name: 'Final Delivery', amount: 40, description: 'Project completion', deadline: qs('end-date').value });
+      } else if (template === 'product') {
+        qs('contract-name').value = 'Product Purchase Agreement';
+        qs('contract-desc').value = 'Escrow agreement for product purchase.';
+        qs('total-value').value = '2500';
+        qs('currency').value = 'USDC';
+        qs('release-condition').value = 'manual';
+        qs('refund-policy').value = 'full';
+        qs('milestones-container').innerHTML = '';
+        addMilestoneRow({ name: 'Order Confirmed', amount: 0, description: 'Funds held in escrow', deadline: qs('start-date').value });
+        addMilestoneRow({ name: 'Item Shipped', amount: 0, description: 'Shipping update', deadline: qs('start-date').value });
+        addMilestoneRow({ name: 'Item Delivered', amount: 100, description: 'Released after inspection', deadline: qs('end-date').value });
+      }
+      openModal('create-contract-modal');
+    }
+
+    function confirmCreateContract() {
+      const total = [...qs('milestones-container').querySelectorAll('input[id^="milestone-amount-"]')].reduce((sum, el) => sum + (parseFloat(el.value) || 0), 0);
+      if (Math.round(total) !== 100) return alert(`Milestone percentages must total 100. Current total: ${total}`);
+      const contract = { id: randomHex(40), name: qs('contract-name').value.trim(), description: qs('contract-desc').value.trim(), type: qs('contract-type').value, totalValue: parseFloat(qs('total-value').value), currency: qs('currency').value, releaseCondition: qs('release-condition').value, remittanceAddress: qs('remittance-address').value.trim(), escrowAddress: qs('escrow-address').value.trim(), refundPolicy: qs('refund-policy').value, startDate: qs('start-date').value, endDate: qs('end-date').value, gracePeriod: parseInt(qs('grace-period').value || '7', 10), qaRequirements: qs('qa-requirements').value.trim(), deliveryRequirements: qs('delivery-requirements').value.trim(), milestones: [], status: 'active', createdAt: new Date().toISOString() };
+      [...qs('milestones-container').children].forEach((row, i) => {
+        const idx = i + 1;
+        contract.milestones.push({ id: idx, name: qs(`milestone-name-${idx}`).value.trim(), amount: parseFloat(qs(`milestone-amount-${idx}`).value), description: qs(`milestone-desc-${idx}`).value.trim(), deadline: qs(`milestone-deadline-${idx}`).value, completed: false });
+      });
+      state.contracts.push(contract);
+      state.transactions.unshift({ hash: randomHex(64), type: 'contractdeploy', amount: contract.totalValue, status: 'confirmed', time: new Date().toISOString() });
+      closeModal('create-contract-modal');
+      updateStats();
+      renderTransactions();
+      alert(`Smart contract created successfully: ${contract.name}`);
+    }
+
+    function connectWallet() {
+      state.connected = !state.connected;
+      state.walletAddress = state.connected ? randomHex(40) : null;
+      state.balance = state.connected ? +(Math.random() * 10).toFixed(2) : 0;
+      updateWalletUI();
+    }
+
+    function selectModule(module) {
+      state.selectedModule = module;
+      qs('welcome-screen').classList.add('hidden');
+      qs('supply-chain-module').classList.add('hidden');
+      qs('payments-module').classList.add('hidden');
+      if (module === 'supply-chain') qs('supply-chain-module').classList.remove('hidden');
+      if (module === 'payments') qs('payments-module').classList.remove('hidden');
+    }
+
+    function seedData() {
+      state.customers = [
+        { id: 'cust_001', name: 'GreenGrid Environmental Engineering' },
+        { id: 'cust_002', name: 'AquaTerra Environmental Consulting' },
+        { id: 'cust_003', name: 'Apex Watershed Solutions' }
+      ];
+      state.products = [
+        { id: 'prod-001', name: 'GreenGrid Environmental Engineering', status: 'registered', currentOwner: 'Block 10428392', location: '19103', txs: [ { hash: '0x8f2a1c4d9e7b3f6a2c5d8e1f0a7b6c3d4e5f60123456789abcd1234567890ef1', title: 'Task Accomplished', text: 'Pickup completed from client site and chain-of-custody logged.', status: 'confirmed', timestamp: '2026-08-05 08:15 AM' }, { hash: '0x19b7f3c2a1d8e4f6b3c5a7e9d2f0a1b3c4d5e6f7890abc1234567890abcdef12', title: 'Internal Transfer', text: 'Transferred to logistics coordinator for routing and inspection prep.', status: 'confirmed', timestamp: '2026-08-05 09:10 AM' }, { hash: '0xa4d9f1c2b3e5a7d8c1f0b2e4d6a8c9f1e3b5d7a90123456789abcdef01234567', title: 'Service Center Delivery', text: 'Delivered to service center for intake review and staging.', status: 'confirmed', timestamp: '2026-08-05 10:05 AM' }, { hash: '0xf1c2e3d4a5b6c7d8e9f00112233445566778899aabbccddeeff0011223344556', title: 'Lab Delivery', text: 'Samples delivered to lab for analysis and verification.', status: 'pending', timestamp: '2026-08-05 11:45 AM' } ] },
+        { id: 'prod-002', name: 'AquaTerra Environmental Consulting', status: 'inspected', currentOwner: 'Block 10428407', location: '15213', txs: [ { hash: '0x9c1a2b3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcd01', title: 'Task Accomplished', text: 'Pickup completed from field office and preliminary record created.', status: 'confirmed', timestamp: '2026-08-05 08:20 AM' }, { hash: '0x7a6b5c4d3e2f1a0987654321fedcba9876543210abcdef1234567890abcdef12', title: 'Internal Transfer', text: 'Transferred internally for documentation and compliance review.', status: 'confirmed', timestamp: '2026-08-05 09:35 AM' }, { hash: '0x3b4c5d6e7f8091a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f708192a', title: 'Service Center Delivery', text: 'Delivered to service center for equipment intake and validation.', status: 'confirmed', timestamp: '2026-08-05 10:45 AM' }, { hash: '0xd2c3b4a5968776655443322110ffeeddccbbaa99887766554433221100ffeecc', title: 'Lab Delivery', text: 'Material delivered to lab for testing and certification.', status: 'pending', timestamp: '2026-08-05 12:00 PM' } ] },
+        { id: 'prod-003', name: 'Apex Watershed Solutions', status: 'shipped', currentOwner: 'Block 10428419', location: '17101', txs: [ { hash: '0x44aabbccddeeff00112233445566778899aabbccddeeff001122334455667788', title: 'Task Accomplished', text: 'Pickup completed at project site and shipment manifest generated.', status: 'confirmed', timestamp: '2026-08-05 07:55 AM' }, { hash: '0x55bbccddeeff00112233445566778899aabbccddeeff00112233445566778899', title: 'Internal Transfer', text: 'Transferred between field teams for routing and QA review.', status: 'confirmed', timestamp: '2026-08-05 09:00 AM' }, { hash: '0x66ccddee00112233445566778899aabbccddeeff00112233445566778899aabb', title: 'Service Center Delivery', text: 'Delivered to service center for processing and dispatch.', status: 'confirmed', timestamp: '2026-08-05 10:20 AM' }, { hash: '0x77ddeeff00112233445566778899aabbccddeeff00112233445566778899aabb', title: 'Lab Delivery', text: 'Lab delivery confirmed for final environmental analysis.', status: 'confirmed', timestamp: '2026-08-05 11:30 AM' } ] }
+      ];
+      renderProducts();
+      loadCustomerOptions();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      qs('connect-btn').addEventListener('click', connectWallet);
+      qs('new-analysis-job-btn').addEventListener('click', () => openModal('analysis-job-modal'));
+      qs('close-analysis-job-btn').addEventListener('click', () => closeModal('analysis-job-modal'));
+      qs('cancel-analysis-job-btn').addEventListener('click', () => closeModal('analysis-job-modal'));
+      qs('use-existing-customer-btn').addEventListener('click', showExistingCustomerFlow);
+      qs('create-new-customer-btn').addEventListener('click', showNewCustomerFlow);
+      qs('create-ledger-btn').addEventListener('click', createNewLedger);
+      qs('create-job-contract-btn').addEventListener('click', createJobContract);
+      qs('analysis-job-modal').addEventListener('click', e => { if (e.target.id === 'analysis-job-modal') closeModal('analysis-job-modal'); });
+      qs('close-history-btn').addEventListener('click', () => closeModal('history-modal'));
+      qs('history-modal').addEventListener('click', e => { if (e.target.id === 'history-modal') closeModal('history-modal'); });
+      qs('cancel-contract-btn').addEventListener('click', () => closeModal('create-contract-modal'));
+      qs('contract-form').addEventListener('submit', e => { e.preventDefault(); confirmCreateContract(); });
+
+      qs('add-milestone-btn').addEventListener('click', () => addMilestoneRow());
+      qs('remove-milestone-btn').addEventListener('click', () => {
+        const count = qs('milestones-container').children.length;
+        if (count > 1) qs(`milestone-${count}`)?.remove();
+        else alert('At least one milestone is required.');
+      });
+ 
+
+
+     document.querySelectorAll('.module-btn,[data-module]').forEach(btn => btn.addEventListener('click', () => selectModule(btn.dataset.module)));
+      document.querySelectorAll('.template-card').forEach(btn => btn.addEventListener('click', () => applyTemplate(btn.dataset.template)));
+      qs('create-contract-modal').addEventListener('click', e => { if (e.target.id === 'create-contract-modal') closeModal('create-contract-modal'); });
+      window.openModal = openModal;
+      window.closeModal = closeModal;
+      window.showProductHistory = showProductHistory;
+      window.removeMilestone = removeMilestone;
+      window.createContract = createContract;
+      window.confirmCreateContract = confirmCreateContract;
+      window.showExistingCustomerFlow = showExistingCustomerFlow;
+      window.showNewCustomerFlow = showNewCustomerFlow;
+      window.createNewLedger = createNewLedger;
+      window.createJobContract = createJobContract;
+      setDefaultDates();
+      addMilestoneRow({ amount: 100 });
+      seedData();
+      updateWalletUI();
+      updateStats();
+      renderTransactions();
+      selectModule('supply-chain');
+    });
+
+
+
+
+  </script>
+
+<script src='https://cdn.jotfor.ms/agent/embedjs/01951f582bfb7a24b0d5b2fac3a25333bbac/embed.js'>
+</script>
+</body>
+</html>
